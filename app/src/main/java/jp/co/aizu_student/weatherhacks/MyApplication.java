@@ -42,7 +42,7 @@ public class MyApplication extends Application {
      */
     public Context getContext() {
         if (context == null) {
-            context = getApplicationContext();
+            context = myApplication.getApplicationContext();
         }
         return context;
     }
