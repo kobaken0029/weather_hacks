@@ -3,6 +3,7 @@ package jp.co.aizu_student.weatherhacks.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,27 +24,35 @@ import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
 
 public class MainFragment extends Fragment {
-    private TextView textView;
-    private AsyncLoaderImageView imageView;
+    private AppCompatActivity mAppCompatActivity;
+    private TextView mWeatherTextView;
+    private TextView mPrefTextView;
+    private TextView mMaxTempTextView;
+    private TextView mMinTempTextView;
+    private AsyncLoaderImageView mImageView;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mAppCompatActivity = (AppCompatActivity) activity;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        textView = (TextView) view.findViewById(R.id.weather_text);
-        imageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
+        mWeatherTextView = (TextView) view.findViewById(R.id.weather_text);
+        mPrefTextView = (TextView) view.findViewById(R.id.pref_text);
+        mMaxTempTextView = (TextView) view.findViewById(R.id.max_temperature_text);
+        mMinTempTextView = (TextView) view.findViewById(R.id.min_temperature_text);
+        mImageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String url = ApiContents.BASE_URL + ApiContents.API_URL + "070030";
+        String url = ApiContents.BASE_URL + ApiContents.API_URL + "410020";
 
         MyApplication.newInstance().getRequestQueue().add(
                 new JsonObjectRequest(ApiContents.HTTP_GET, url, (String) null, new Response.Listener<JSONObject>() {
@@ -52,19 +61,44 @@ public class MainFragment extends Fragment {
                         // 通信に成功した場合
                         Log.d("VolleySample", response.toString());
                         try {
+                            JSONObject locationObject = response.getJSONObject("location");
+                            if (hasPref(locationObject)) {
+                                mPrefTextView.setText(getMessage(R.string.pref_text)
+                                        + locationObject.get("prefecture").toString());
+                            }
+
                             JSONArray jsonArray = response.getJSONArray("forecasts");
-                            for (int i = 0; i < jsonArray.length(); i++) {
+                            for (int i = 0; i < 1; i++) {
                                 JSONObject object = jsonArray.getJSONObject(i);
-                                if (object.has("telop")) {
-                                    textView.setText(object.get("telop").toString());
+                                if (hasTelop(object)) {
+                                    mWeatherTextView.setText(object.get("telop").toString());
                                 }
 
-                                if (object.has("image")) {
+                                if (hasTemp(object)) {
+                                    JSONObject jsonObject = object.getJSONObject("temperature");
+                                    JSONObject obj;
+                                    if (hasTemp(jsonObject, "max")) {
+                                        obj = jsonObject.getJSONObject("max");
+                                        if (obj.has("celsius")) {
+                                            mMaxTempTextView.setText(getMessage(R.string.max_temp_text)
+                                                    + obj.get("celsius").toString()
+                                                    + getMessage(R.string.celsius_symbol));
+                                        }
+                                    } else if (hasTemp(jsonObject, "min")) {
+                                        obj = jsonObject.getJSONObject("min");
+                                        if (obj.has("celsius")) {
+                                            mMinTempTextView.setText(getMessage(R.string.min_temp_text)
+                                                    + jsonObject.get("celsius").toString()
+                                                    + getMessage(R.string.celsius_symbol));
+                                        }
+                                    }
+                                }
+
+                                if (hasImage(object)) {
                                     JSONObject jsonObject = object.getJSONObject("image");
-                                    if (jsonObject.has("url")) {
-                                        imageView.setImageUrl(jsonObject.get("url").toString());
-                                        getLoaderManager().initLoader(0, null, imageView).forceLoad();
-                                        break;
+                                    if (hasUrl(jsonObject)) {
+                                        mImageView.setImageUrl(jsonObject.get("url").toString());
+                                        getLoaderManager().initLoader(0, null, mImageView).forceLoad();
                                     }
                                 }
                             }
@@ -79,7 +113,6 @@ public class MainFragment extends Fragment {
                         Log.d("VolleySample", error.toString());
                     }
                 }));
-
     }
 
     @Override
@@ -87,4 +120,76 @@ public class MainFragment extends Fragment {
         super.onDetach();
     }
 
+    /**
+     * IDからメッセージを取得する。
+     *
+     * @param msgId メッセージID
+     * @return メッセージ
+     */
+    private String getMessage(int msgId) {
+        return mAppCompatActivity.getString(msgId);
+    }
+
+    /**
+     * 対象のJSONObjectに都道府県が含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @return 含まれていたらtrue
+     */
+    private boolean hasPref(JSONObject target) {
+        return target.has("prefecture");
+    }
+
+    /**
+     * 対象のJSONObjectに天気が含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @return 含まれていたらtrue
+     */
+    private boolean hasTelop(JSONObject target) {
+        return target.has("telop");
+    }
+
+    /**
+     * 対象のJSONObjectに気温が含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @return 含まれていたらtrue
+     */
+    private boolean hasTemp(JSONObject target) {
+        return target.has("temperature");
+    }
+
+    /**
+     * 対象のJSONObjectに最高気温(最低気温)が含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @param status 最高気温(最低気温)
+     * @return JSONObjectが最高気温(最低気温)が含まれていたらtrue
+     */
+    private boolean hasTemp(JSONObject target, String status) {
+        return (status.equals("max") || status.equals("min")) &&
+                target.has(status) &&
+                !target.isNull(status);
+    }
+
+    /**
+     * 対象のJSONObjectに写真が含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @return 含まれていたらtrue
+     */
+    private boolean hasImage(JSONObject target) {
+        return target.has("image");
+    }
+
+    /**
+     * 対象のJSONObjectにURLが含まれているかどうかを取得する。
+     *
+     * @param target 対象のJSONObject
+     * @return 含まれていたらtrue
+     */
+    private boolean hasUrl(JSONObject target) {
+        return target.has("url");
+    }
 }

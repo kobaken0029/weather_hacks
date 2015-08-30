@@ -4,19 +4,59 @@
     android:layout_height="match_parent"
     tools:context="jp.co.aizu_student.weatherhacks.fragments.MainFragment">
 
-    <TextView
-        android:id="@+id/weather_text"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:gravity="start"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/pref_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="　　都道府県:"
+            android:textSize="24sp" />
 
-        <jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView
-            android:id="@+id/weather_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center" />
-    </FrameLayout>
+        <TextView
+            android:id="@+id/max_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="予想最高気温:"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/min_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="予想最低気温:"
+            android:textSize="24sp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView
+                android:id="@+id/weather_image"
+                android:layout_width="200dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/weather_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="晴れ"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
 </FrameLayout>
