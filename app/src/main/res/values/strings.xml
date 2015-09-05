@@ -7,4 +7,6 @@
     <string name="min_temp_text">予想最低気温:　</string>
     <string name="celsius_symbol">℃</string>
 
+    <string name="today">今日</string>
+    <string name="tomorrow">明日</string>
 </resources>

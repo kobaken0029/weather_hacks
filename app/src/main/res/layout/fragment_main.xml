@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="jp.co.aizu_student.weatherhacks.fragments.MainFragment">
 
     <LinearLayout
@@ -17,7 +21,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="　　都道府県:"
             android:textSize="24sp" />
 
         <TextView
@@ -26,7 +29,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="予想最高気温:"
             android:textSize="24sp" />
 
         <TextView
@@ -35,7 +37,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="予想最低気温:"
             android:textSize="24sp" />
 
         <FrameLayout
@@ -54,8 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="晴れ"
-            android:textSize="30sp" />
+            android:textSize="80sp" />
 
     </LinearLayout>
 

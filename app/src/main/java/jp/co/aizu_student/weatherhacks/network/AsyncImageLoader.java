@@ -1,13 +1,14 @@
 package jp.co.aizu_student.weatherhacks.network;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 
 /**
  * Created by koba on 2015/06/18.
