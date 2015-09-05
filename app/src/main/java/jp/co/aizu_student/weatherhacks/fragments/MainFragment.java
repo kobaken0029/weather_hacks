@@ -90,8 +90,7 @@ public class MainFragment extends Fragment {
 
         JSONObject locationObject = response.getJSONObject("location");
         if (hasPref(locationObject)) {
-            mPrefTextView.setText(getMessage(R.string.pref_text)
-                    + locationObject.get("prefecture").toString());
+            mPrefTextView.setText(locationObject.get("prefecture").toString());
         }
 
         JSONArray jsonArray = response.getJSONArray("forecasts");
@@ -118,16 +117,14 @@ public class MainFragment extends Fragment {
             if (hasTemp(jsonObject, "max")) {
                 obj = jsonObject.getJSONObject("max");
                 if (obj.has("celsius")) {
-                    mMaxTempTextView.setText(getMessage(R.string.max_temp_text)
-                            + obj.get("celsius").toString()
-                            + getMessage(R.string.celsius_symbol));
+                    mMaxTempTextView.setText(obj.get("celsius").toString() + getMessage(R.string.celsius_symbol));
                 }
-            } else if (hasTemp(jsonObject, "min")) {
+            }
+
+            if (hasTemp(jsonObject, "min")) {
                 obj = jsonObject.getJSONObject("min");
                 if (obj.has("celsius")) {
-                    mMinTempTextView.setText(getMessage(R.string.min_temp_text)
-                            + jsonObject.get("celsius").toString()
-                            + getMessage(R.string.celsius_symbol));
+                    mMinTempTextView.setText(obj.get("celsius").toString() + getMessage(R.string.celsius_symbol));
                 }
             }
         }
@@ -136,7 +133,6 @@ public class MainFragment extends Fragment {
             JSONObject jsonObject = object.getJSONObject("image");
             if (hasUrl(jsonObject)) {
                 mImageView.setImageUrl(jsonObject.get("url").toString());
-
                 getLoaderManager().initLoader(0, null, mImageView).forceLoad();
             }
         }
