@@ -5,8 +5,18 @@
     tools:context="jp.co.aizu_student.weatherhacks.fragments.MainFragment">
 
     <TextView
+        android:id="@+id/weather_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView
+            android:id="@+id/weather_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </FrameLayout>
