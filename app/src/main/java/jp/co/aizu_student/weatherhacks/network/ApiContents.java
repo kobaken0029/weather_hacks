@@ -10,6 +10,7 @@ public class ApiContents {
     public static final int HTTP_READ_TIMEOUT = 10000; // milliseconds
     public static final int HTTP_GET = 0;
     public static final int HTTP_POST = 1;
+    public static final String PARAM_AIZU = "130010";
 
     public static String RESPONSE_VALUE_SUCCESS = "success";
     public static String PARAM_VALUE_OFF = "0";

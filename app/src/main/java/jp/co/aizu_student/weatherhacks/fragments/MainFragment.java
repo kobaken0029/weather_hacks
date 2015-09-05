@@ -54,7 +54,16 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String url = ApiContents.BASE_URL + ApiContents.API_URL + "130010";
+        requestToWeatherHacks(ApiContents.PARAM_AIZU);
+    }
+
+    /**
+     * WeatherHacksのAPIに対してリクエストする。
+     *
+     * @param parameter パラメータ(対象の地域ID)
+     */
+    public void requestToWeatherHacks(String parameter) {
+        String url = ApiContents.BASE_URL + ApiContents.API_URL + parameter;
 
         MyApplication.newInstance().getRequestQueue().add(
                 new JsonObjectRequest(ApiContents.HTTP_GET, url, (String) null, new Response.Listener<JSONObject>() {
