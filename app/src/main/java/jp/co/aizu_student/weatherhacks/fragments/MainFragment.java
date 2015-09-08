@@ -12,13 +12,15 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.models.Forecast;
+import jp.co.aizu_student.weatherhacks.models.Temperature;
+import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
 
@@ -58,11 +60,8 @@ public class MainFragment extends Fragment {
                 new JsonObjectRequest(ApiContents.HTTP_GET, url, (String) null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            setWeather(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
+                        setViewFromWeatherInfo(weatherInfo);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -73,69 +72,26 @@ public class MainFragment extends Fragment {
                 }));
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
     /**
-     * レスポンス情報から天気情報を読み込み、画面にセットする。
+     * 天気情報から画面に値をセットする。
      *
-     * @param response レスポンス
-     * @throws JSONException 例外
+     * @param info 天気情報
      */
-    private void setWeather(JSONObject response) throws JSONException {
-        // 通信に成功した場合
-        Log.d("VolleySample", response.toString());
+    private void setViewFromWeatherInfo(WeatherInfo info) {
+        Forecast forecast = info.getForecasts().get(getArguments().getInt("targetDay"));
+        Temperature temperature = forecast.getTemperature();
 
-        JSONObject locationObject = response.getJSONObject("location");
-        if (hasPref(locationObject)) {
-            mPrefTextView.setText(locationObject.get("prefecture").toString());
-        }
+        mPrefTextView.setText(info.getLocation().getPrefecture());
+        mWeatherTextView.setText(forecast.getTelop());
+        mMaxTempTextView.setText(temperature.getMax() != null
+                ? temperature.getMax().get("celsius") + getMessage(R.string.celsius_symbol)
+                : "");
+        mMinTempTextView.setText(temperature.getMin() != null
+                ? temperature.getMin().get("celsius") + getMessage(R.string.celsius_symbol)
+                : "");
 
-        JSONArray jsonArray = response.getJSONArray("forecasts");
-        setForecasts(jsonArray);
-    }
-
-    /**
-     * 天気予報を画面にセットする。
-     *
-     * @param jsonArray JSONの配列
-     * @throws JSONException 例外
-     */
-    private void setForecasts(JSONArray jsonArray) throws JSONException {
-        int targetDay = getArguments().getInt("targetDay");
-        JSONObject object = jsonArray.getJSONObject(targetDay);
-
-        if (hasTelop(object)) {
-            mWeatherTextView.setText(object.get("telop").toString());
-        }
-
-        if (hasTemp(object)) {
-            JSONObject jsonObject = object.getJSONObject("temperature");
-            JSONObject obj;
-            if (hasTemp(jsonObject, "max")) {
-                obj = jsonObject.getJSONObject("max");
-                if (obj.has("celsius")) {
-                    mMaxTempTextView.setText(obj.get("celsius").toString() + getMessage(R.string.celsius_symbol));
-                }
-            }
-
-            if (hasTemp(jsonObject, "min")) {
-                obj = jsonObject.getJSONObject("min");
-                if (obj.has("celsius")) {
-                    mMinTempTextView.setText(obj.get("celsius").toString() + getMessage(R.string.celsius_symbol));
-                }
-            }
-        }
-
-        if (hasImage(object)) {
-            JSONObject jsonObject = object.getJSONObject("image");
-            if (hasUrl(jsonObject)) {
-                mImageView.setImageUrl(jsonObject.get("url").toString());
-                getLoaderManager().initLoader(0, null, mImageView).forceLoad();
-            }
-        }
+        mImageView.setImageUrl(forecast.getImage().getUrl());
+        getLoaderManager().initLoader(0, null, mImageView).forceLoad();
     }
 
     /**
@@ -146,68 +102,5 @@ public class MainFragment extends Fragment {
      */
     private String getMessage(int msgId) {
         return mActivity.getString(msgId);
-    }
-
-    /**
-     * 対象のJSONObjectに都道府県が含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @return 含まれていたらtrue
-     */
-    private boolean hasPref(JSONObject target) {
-        return target.has("prefecture");
-    }
-
-    /**
-     * 対象のJSONObjectに天気が含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @return 含まれていたらtrue
-     */
-    private boolean hasTelop(JSONObject target) {
-        return target.has("telop");
-    }
-
-    /**
-     * 対象のJSONObjectに気温が含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @return 含まれていたらtrue
-     */
-    private boolean hasTemp(JSONObject target) {
-        return target.has("temperature");
-    }
-
-    /**
-     * 対象のJSONObjectに最高気温(最低気温)が含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @param status 最高気温(最低気温)
-     * @return JSONObjectが最高気温(最低気温)が含まれていたらtrue
-     */
-    private boolean hasTemp(JSONObject target, String status) {
-        return (status.equals("max") || status.equals("min")) &&
-                target.has(status) &&
-                !target.isNull(status);
-    }
-
-    /**
-     * 対象のJSONObjectに写真が含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @return 含まれていたらtrue
-     */
-    private boolean hasImage(JSONObject target) {
-        return target.has("image");
-    }
-
-    /**
-     * 対象のJSONObjectにURLが含まれているかどうかを取得する。
-     *
-     * @param target 対象のJSONObject
-     * @return 含まれていたらtrue
-     */
-    private boolean hasUrl(JSONObject target) {
-        return target.has("url");
     }
 }
