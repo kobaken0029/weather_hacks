@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
+import jp.co.aizu_student.weatherhacks.activities.MainActivity;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
@@ -54,7 +55,8 @@ public class MainFragment extends Fragment {
         mPrefTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.startActivityForResult(new Intent(mActivity, LocationListActivity.class), 1);
+                Intent intent = new Intent(mActivity, LocationListActivity.class);
+                mActivity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
             }
         });
 

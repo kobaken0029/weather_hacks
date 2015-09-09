@@ -19,6 +19,7 @@ import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 1:
+            case REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     applyWeather(bundle.getString("id"));
