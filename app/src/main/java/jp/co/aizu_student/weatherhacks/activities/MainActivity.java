@@ -6,22 +6,18 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
-import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     public static final int REQUEST_CODE = 1;
 
     @Inject
@@ -32,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        injectModule();
         initToolbar();
         initTabLayout();
     }
@@ -50,25 +45,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-    }
-
-    /**
-     * DIする。
-     */
-    private void injectModule() {
-        ObjectGraph objectGraph = ObjectGraph.create(new WeatherHacksModule());
-        objectGraph.inject(this);
-    }
-
-    /**
-     * toolbarの初期化。
-     */
-    protected void initToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_menu);
-
-        mToolbar.setTitle(R.string.app_name);
-        mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        setSupportActionBar(mToolbar);
     }
 
     /**
