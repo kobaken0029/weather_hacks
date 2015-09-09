@@ -1,5 +1,7 @@
 package jp.co.aizu_student.weatherhacks.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -27,6 +29,21 @@ public class MainActivity extends AppCompatActivity {
         initTabLayout();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                if (resultCode == Activity.RESULT_OK) {
+                    Bundle bundle = data.getExtras();
+                    applyWeather(bundle.getString("id"));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * toolbarの初期化。
      */
@@ -51,6 +68,18 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setTabMode(TabLayout.MODE_FIXED);
     }
 
+    /**
+     * パラメータに応じて天気情報を適用する。
+     *
+     * @param param パラメータ
+     */
+    private void applyWeather(String param) {
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            MainFragment ff = (MainFragment) f;
+            ff.requestToWeatherHacks(param);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -61,10 +90,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.refresh) {
-            for (Fragment f : getSupportFragmentManager().getFragments()) {
-                MainFragment ff = (MainFragment) f;
-                ff.requestToWeatherHacks(ApiContents.PARAM_AIZU);
-            }
+            // TODO: パラメータを現在の地域のものにする。SharedPreferencesを使う。
+            applyWeather(ApiContents.PARAM_AIZU);
             Snackbar.make(findViewById(R.id.view_pager),
                     getString(R.string.refresh_message),
                     Snackbar.LENGTH_SHORT).show();

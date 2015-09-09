@@ -1,6 +1,7 @@
 package jp.co.aizu_student.weatherhacks.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
@@ -48,6 +50,14 @@ public class MainFragment extends Fragment {
         mMaxTempTextView = (TextView) view.findViewById(R.id.max_temperature_text);
         mMinTempTextView = (TextView) view.findViewById(R.id.min_temperature_text);
         mImageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
+
+        mPrefTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.startActivityForResult(new Intent(mActivity, LocationListActivity.class), 1);
+            }
+        });
+
         return view;
     }
 
@@ -90,7 +100,7 @@ public class MainFragment extends Fragment {
         Forecast forecast = info.getForecasts().get(getArguments().getInt("targetDay"));
         Temperature temperature = forecast.getTemperature();
 
-        mPrefTextView.setText(info.getLocation().getPrefecture());
+        mPrefTextView.setText(info.getLocation().getPrefecture() + " " + info.getLocation().getCity());
         mWeatherTextView.setText(forecast.getTelop());
         mMaxTempTextView.setText(temperature.getMax() != null
                 ? temperature.getMax().get("celsius") + getMessage(R.string.celsius_symbol)
