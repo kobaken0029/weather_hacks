@@ -110,7 +110,7 @@ public class MainFragment extends Fragment {
                 : "");
 
         mImageView.setImageUrl(forecast.getImage().getUrl());
-        getLoaderManager().initLoader(0, null, mImageView).forceLoad();
+        getLoaderManager().restartLoader(0, null, mImageView).forceLoad();
     }
 
     /**
