@@ -22,6 +22,8 @@ import jp.co.aizu_student.weatherhacks.network.ApiContents;
  * Created by koba on 2015/09/10.
  */
 public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
+    /** タグ */
+    private static final String TAG = WeatherHacksApiHelper.class.getName();
 
     @Override
     public void requestWeather(String parameter, final FragmentManager fragmentManager) {
@@ -42,7 +44,7 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // エラーが発生した場合
-                Log.d("VolleySample", error.toString());
+                Log.d(TAG, error.toString());
             }
         };
 

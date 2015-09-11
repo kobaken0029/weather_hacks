@@ -29,6 +29,14 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     /** RSSのURL */
     private static final String RSS_URL = "http://weather.livedoor.com/forecast/rss/primary_area.xml";
 
+    /** RSSのタグ名 */
+    private static final String RSS_TAG_NAME_PREFECTURE = "pref";
+    private static final String RSS_TAG_NAME_CITY = "city";
+
+    /** RSSのバリュー名 */
+    private static final String RSS_VALUE_NAME_TITLE = "title";
+    private static final String RSS_VALUE_NAME_ID = "id";
+
     private static List<Location> locations;
 
     @Override
@@ -74,13 +82,13 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
                     switch (eventType) {
                         case XmlPullParser.START_TAG:
                             tag = xmlPullParser.getName();
-                            if (tag.equals("pref")) {
-                                pref = xmlPullParser.getAttributeValue(null, "title");
-                            } else if (tag.equals("city")) {
+                            if (tag.equals(RSS_TAG_NAME_PREFECTURE)) {
+                                pref = xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_TITLE);
+                            } else if (tag.equals(RSS_TAG_NAME_CITY)) {
                                 location = new Location();
                                 location.setPrefecture(pref);
-                                location.setCity(xmlPullParser.getAttributeValue(null, "title"));
-                                location.setId(xmlPullParser.getAttributeValue(null, "id"));
+                                location.setCity(xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_TITLE));
+                                location.setId(xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_ID));
                                 locations.add(location);
                             }
                     }

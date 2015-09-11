@@ -90,10 +90,10 @@ public class MainFragment extends Fragment {
         mPrefTextView.setText(info.getLocation().getPrefecture() + " " + info.getLocation().getCity());
         mWeatherTextView.setText(forecast.getTelop());
         mMaxTempTextView.setText(temperature.getMax() != null
-                ? temperature.getMax().get("celsius") + getMessage(R.string.celsius_symbol)
+                ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
                 : "");
         mMinTempTextView.setText(temperature.getMin() != null
-                ? temperature.getMin().get("celsius") + getMessage(R.string.celsius_symbol)
+                ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
                 : "");
 
         mImageView.setImageUrl(forecast.getImage().getUrl());

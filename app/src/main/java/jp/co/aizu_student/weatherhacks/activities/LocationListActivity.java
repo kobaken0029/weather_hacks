@@ -44,8 +44,8 @@ public class LocationListActivity extends BaseActivity {
 
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
-                bundle.putString("id", location.getId());
-                bundle.putString("city", location.getCity());
+                bundle.putString(Location.FIELD_NAME_ID, location.getId());
+                bundle.putString(Location.FIELD_NAME_CITY, location.getCity());
                 intent.putExtras(bundle);
 
                 setResult(RESULT_OK, intent);
