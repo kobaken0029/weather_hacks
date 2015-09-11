@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import jp.co.aizu_student.weatherhacks.R;
@@ -25,12 +27,14 @@ public class LocationListActivity extends BaseActivity {
         setContentView(R.layout.activity_location_list);
 
         initToolbar();
-        initLocationListView();
+        rssHelper.rssParse(this);
     }
 
-    private void initLocationListView() {
+    public void initLocationListView(List<Location> locations) {
+        if (locations == null) return;
+
         final ListView locationListView = (ListView) findViewById(R.id.location_listview);
-        LocationListAdapter adapter = new LocationListAdapter(this, 0, rssHelper.getLocations());
+        LocationListAdapter adapter = new LocationListAdapter(this, 0, locations);
         locationListView.setAdapter(adapter);
         locationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

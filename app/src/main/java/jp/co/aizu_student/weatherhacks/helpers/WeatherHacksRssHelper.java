@@ -1,13 +1,11 @@
 package jp.co.aizu_student.weatherhacks.helpers;
 
-import java.util.List;
-
-import jp.co.aizu_student.weatherhacks.models.Location;
+import android.app.Activity;
 
 
 /**
  * Created by koba on 2015/09/10.
  */
 public interface WeatherHacksRssHelper {
-    List<Location> getLocations();
+    void rssParse(Activity activity);
 }
