@@ -32,6 +32,7 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
                 WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
                 for (Fragment f : fragmentManager.getFragments()) {
                     MainFragment targetFragment = (MainFragment) f;
@@ -44,7 +45,7 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // エラーが発生した場合
-                Log.d(TAG, error.toString());
+                Log.e(TAG, error.toString());
             }
         };
 
