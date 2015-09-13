@@ -9,20 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.models.Forecast;
-import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.models.Temperature;
-import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
 
 
@@ -41,24 +32,18 @@ public class MainFragment extends Fragment {
         super.onAttach(activity);
 
         // Activityを設定
-        mActivity = activity;
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // FragmentのViewをinflateする
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         // 各Viewを取得
-        mWeatherTextView = (TextView) view.findViewById(R.id.weather_text);
-        mPrefTextView = (TextView) view.findViewById(R.id.pref_text);
-        mMaxTempTextView = (TextView) view.findViewById(R.id.max_temperature_text);
-        mMinTempTextView = (TextView) view.findViewById(R.id.min_temperature_text);
-        mImageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
 
         // 親Viewを返却
-        return view;
+        return null;
     }
 
     @Override
@@ -70,7 +55,6 @@ public class MainFragment extends Fragment {
         String url = "http://weather.livedoor.com/forecast/webservice/json/v1?city=" + "070030";
 
         // RequestQueueを取得
-        RequestQueue mRequestQueue = Volley.newRequestQueue(mActivity);
 
         // レスポンスのListenerを生成
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
@@ -78,32 +62,12 @@ public class MainFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 /* ===responseから値を取り出し、画面にセット=== */
                 // 天気情報をJsonからJavaオブジェクトにパース
-                WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
 
                 // 各種オブジェクトを天気情報から取得
-                Location location = weatherInfo.getLocation();
-                Forecast forecast = weatherInfo.getForecasts().get(getArguments().getInt("targetDay"));
-                Temperature temperature = forecast.getTemperature();
 
                 // 各Viewに値を設定
-                mPrefTextView.setText(location.getPrefecture() + " " + location.getCity());
-                mWeatherTextView.setText(forecast.getTelop());
-                if (temperature.getMax() != null) {
-                    mMaxTempTextView.setText(temperature.getMax().get("celsius")
-                            + mActivity.getString(R.string.celsius_symbol));
-                } else {
-                    mMaxTempTextView.setText("");
-                }
-                if (temperature.getMax() != null) {
-                    mMinTempTextView.setText(temperature.getMin().get("celsius")
-                            + mActivity.getString(R.string.celsius_symbol));
-                } else {
-                    mMinTempTextView.setText("");
-                }
 
                 // 画像をカスタムView(ImageView)に設定
-                mImageView.setImageUrl(forecast.getImage().getUrl());
-                getLoaderManager().initLoader(0, null, mImageView).forceLoad();
 
                 /* ======================================== */
             }
@@ -118,11 +82,8 @@ public class MainFragment extends Fragment {
         };
 
         // リクエストを作成
-        JsonObjectRequest request =
-                new JsonObjectRequest(0, url, (String) null, listener, errorListener);
 
         // リクエストをRequestQueueに追加
-        mRequestQueue.add(request);
 
         /* ============================================================== */
     }

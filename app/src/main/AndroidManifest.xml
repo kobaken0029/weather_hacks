@@ -3,8 +3,6 @@
     package="jp.co.aizu_student.weatherhacks">
 
     <!-- ネットワークアクセスを許可する -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Iconを設定 -->
     <application

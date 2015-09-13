@@ -1,48 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <!-- Toolbarを設置 -->
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:elevation="4dp" />
 
     <!-- TabLayoutを設置 -->
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_menu"
-        android:background="#00C0D8"
-        app:tabIndicatorColor="#FFC107"
-        app:tabSelectedTextColor="#FFFFFFFF"
-        app:tabTextColor="#AAFFFFFF" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout"
         android:background="#FFFFFFFF">
 
         <!-- ViewPager設置 -->
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <!-- Toolbarの影 -->
-        <View xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/shadow"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@drawable/bg_shadow" />
 
     </FrameLayout>
 

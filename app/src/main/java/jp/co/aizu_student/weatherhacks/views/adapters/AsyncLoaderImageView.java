@@ -8,8 +8,6 @@ import android.support.v4.content.Loader;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import jp.co.aizu_student.weatherhacks.network.AsyncImageLoader;
-
 
 /**
  * Created by koba on 2015/06/18.
@@ -38,16 +36,14 @@ public class AsyncLoaderImageView extends ImageView
     @Override
     public Loader<Bitmap> onCreateLoader(int i, Bundle bundle) {
         // 非同期Loaderを生成
-        AsyncImageLoader asyncImageLoader = new AsyncImageLoader(getContext(), this.url);
 
         // 非同期Loaderを返却
-        return asyncImageLoader;
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Bitmap> loader, Bitmap bm) {
         // ViewにBitmapを設定
-        setImageBitmap(bm);
     }
 
     @Override

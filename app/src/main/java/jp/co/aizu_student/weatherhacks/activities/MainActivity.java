@@ -1,18 +1,14 @@
 package jp.co.aizu_student.weatherhacks.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,42 +20,30 @@ public class MainActivity extends AppCompatActivity {
 
         /* ====Toolbar(Actionbar)を初期化==== */
         // ToolbarをLayoutファイルから取得
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_menu);
 
         // Toolbarのタイトルを設定
-        mToolbar.setTitle(R.string.app_name);
 
         // Toolbarのタイトル文字色を設定
-        mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 
         // ToolbarをSupportActionBarに設定
-        setSupportActionBar(mToolbar);
 
         /* ===================================== */
 
 
         /* =========タブレイアウトを初期化========= */
         // TabLayoutをLayoutファイルから取得
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         // ViewPagerをLayoutファイルから取得
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
         // MyPagerAdapterを生成
-        MyPagerAdapter adapter = new MyPagerAdapter(this);
 
         // ViewPagerにMyPagerAdapterを設定
-        mViewPager.setAdapter(adapter);
 
         // ViewPagerに「ページが切り替わった時」のListenerを設定
-        mViewPager.addOnPageChangeListener(adapter);
 
         // TabLayoutにViewPagerを設定
-        mTabLayout.setupWithViewPager(mViewPager);
 
         // TabLayoutのTabをいい感じに表示させるための設定(2行)
-        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
 
         /* ===================================== */
     }
@@ -91,19 +75,15 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(final int position) {
             /* ===表示するFragmentを生成＆返却=== */
             // Bundleを生成
-            Bundle bundle = new Bundle();
 
             // BundleにFragment生成時に必要な値を設定(今日or明日)
-            bundle.putInt("targetDay", position);
 
             // Fragmentを生成
-            MainFragment fragment = new MainFragment();
 
             // FragmentにBundleを設定
-            fragment.setArguments(bundle);
 
             // Fragmentを返却
-            return fragment;
+            return null;
 
             /* =============================== */
         }
@@ -111,17 +91,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // タブの表示個数を返却
-            return 2;
+            return 0;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             // タブに表示されるタイトルを返却
-            if (position == 0) {
-                return mActivity.getString(R.string.today);
-            } else {
-                return mActivity.getString(R.string.tomorrow);
-            }
+            return "";
         }
     }
 
@@ -137,16 +113,13 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.refresh) {
             for (Fragment f : getSupportFragmentManager().getFragments()) {
                 // FragmentをMainFragmentにキャスト
-                MainFragment ff = (MainFragment) f;
 
                 // Fragmentにあるリクエスト関数を呼び出す
-//                ff.requestToWeatherHacks(ApiContents.PARAM_AIZU);
+
             }
 
             // Snackbarで更新したことを知らせる
-            Snackbar.make(findViewById(R.id.view_pager),
-                    getString(R.string.refresh_message),
-                    Snackbar.LENGTH_SHORT).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
