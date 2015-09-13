@@ -15,6 +15,7 @@
         android:gravity="start"
         android:orientation="vertical">
 
+        <!-- 地域表示 -->
         <TextView
             android:id="@+id/pref_text"
             android:layout_width="wrap_content"
@@ -24,6 +25,7 @@
             android:paddingTop="8dp"
             android:textSize="24sp" />
 
+        <!-- 最高気温表示 -->
         <TextView
             android:id="@+id/max_temperature_text"
             android:layout_width="wrap_content"
@@ -34,6 +36,7 @@
             android:textColor="#FF0000"
             android:textSize="24sp" />
 
+        <!-- 最低気温表示 -->
         <TextView
             android:id="@+id/min_temperature_text"
             android:layout_width="wrap_content"
@@ -44,6 +47,7 @@
             android:textColor="#0000FF"
             android:textSize="24sp" />
 
+        <!-- 天気画像表示 -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -55,6 +59,7 @@
                 android:layout_gravity="center" />
         </FrameLayout>
 
+        <!-- 天気表示 -->
         <TextView
             android:id="@+id/weather_text"
             android:layout_width="match_parent"

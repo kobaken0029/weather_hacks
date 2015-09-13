@@ -37,11 +37,16 @@ public class AsyncLoaderImageView extends ImageView
 
     @Override
     public Loader<Bitmap> onCreateLoader(int i, Bundle bundle) {
-        return new AsyncImageLoader(getContext(), this.url);
+        // 非同期Loaderを生成
+        AsyncImageLoader asyncImageLoader = new AsyncImageLoader(getContext(), this.url);
+
+        // 非同期Loaderを返却
+        return asyncImageLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Bitmap> loader, Bitmap bm) {
+        // ViewにBitmapを設定
         setImageBitmap(bm);
     }
 

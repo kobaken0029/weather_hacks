@@ -2,13 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.co.aizu_student.weatherhacks">
 
+    <!-- ネットワークアクセスを許可する -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Iconを設定 -->
     <application
-        android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_wh"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
