@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,26 @@ public class MainActivity extends BaseActivity {
     @Inject
     WeatherHacksApiHelper apiHelper;
 
+    private Toolbar.OnMenuItemClickListener mMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.refresh) {
+                String param = MyApplication.newInstance().getLocationId();
+
+                if (TextUtils.isEmpty(param)) {
+                    MyApplication.newInstance().setLocationId(ApiContents.PARAM_AIZU);
+                }
+                apiHelper.requestWeather(param, getSupportFragmentManager());
+
+                Snackbar.make(findViewById(R.id.view_pager),
+                        getString(R.string.refresh_message),
+                        Snackbar.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +62,7 @@ public class MainActivity extends BaseActivity {
         MyApplication myApplication = MyApplication.newInstance();
         myApplication.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ApiContents.PARAM_AIZU));
 
-        initToolbar();
+        initToolbar(R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
     }
 
@@ -80,29 +101,5 @@ public class MainActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mTabLayout.setTabMode(TabLayout.MODE_FIXED);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.refresh) {
-            String param = MyApplication.newInstance().getLocationId();
-
-            if (TextUtils.isEmpty(param)) {
-                MyApplication.newInstance().setLocationId(ApiContents.PARAM_AIZU);
-            }
-            apiHelper.requestWeather(param, getSupportFragmentManager());
-
-            Snackbar.make(findViewById(R.id.view_pager),
-                    getString(R.string.refresh_message),
-                    Snackbar.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
