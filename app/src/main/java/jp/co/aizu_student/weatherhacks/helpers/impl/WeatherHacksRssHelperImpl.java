@@ -1,8 +1,20 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 
@@ -11,52 +23,82 @@ import jp.co.aizu_student.weatherhacks.models.Location;
  * Created by koba on 2015/09/10.
  */
 public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
+    /** タグ */
+    private static final String TAG = WeatherHacksRssHelper.class.getName();
+
+    /** RSSのURL */
+    private static final String RSS_URL = "http://weather.livedoor.com/forecast/rss/primary_area.xml";
+
+    /** RSSのタグ名 */
+    private static final String RSS_TAG_NAME_PREFECTURE = "pref";
+    private static final String RSS_TAG_NAME_CITY = "city";
+
+    /** RSSのバリュー名 */
+    private static final String RSS_VALUE_NAME_TITLE = "title";
+    private static final String RSS_VALUE_NAME_ID = "id";
+
+    private static List<Location> locations;
 
     @Override
-    public List<Location> getLocations() {
-        Location hokkaido = new Location();
-        hokkaido.setPrefecture("北海道");
-        hokkaido.setCity("函館");
-        hokkaido.setId("017010");
-        Location aomori = new Location();
-        aomori.setPrefecture("青森");
-        aomori.setCity("青森");
-        aomori.setId("020010");
-        Location niigata = new Location();
-        niigata.setPrefecture("新潟");
-        niigata.setCity("長岡");
-        niigata.setId("150020");
-        Location tokyo = new Location();
-        tokyo.setPrefecture("東京");
-        tokyo.setCity("渋谷");
-        tokyo.setId("130010");
+    public void rssParse(final Activity activity) {
+        AsyncTask<String, Integer, List<Location>> rssTask = new AsyncTask<String, Integer, List<Location>>() {
+            @Override
+            protected List<Location> doInBackground(String... params) {
+                if (locations != null) {
+                    return locations;
+                }
 
-        List<Location> locations = new ArrayList<>();
-        locations.add(hokkaido);
-        locations.add(hokkaido);
-        locations.add(hokkaido);
-        locations.add(hokkaido);
-        locations.add(aomori);
-        locations.add(aomori);
-        locations.add(aomori);
-        locations.add(aomori);
-        locations.add(aomori);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(niigata);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        locations.add(tokyo);
-        return locations;
+                try {
+                    URL url = new URL(params[0]);
+                    InputStream is = url.openConnection().getInputStream();
+                    locations = parse(is);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                } catch (XmlPullParserException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+                return locations;
+            }
+
+            @Override
+            protected void onPostExecute(List<Location> locations) {
+                if (activity instanceof LocationListActivity) {
+                    ((LocationListActivity) activity).initLocationListView(locations);
+                }
+            }
+
+            private List<Location> parse(InputStream is) throws IOException, XmlPullParserException {
+                Location location;
+                String pref = "";
+                locations = new ArrayList<>();
+
+                XmlPullParser xmlPullParser = Xml.newPullParser();
+                xmlPullParser.setInput(is, null);
+                int eventType = xmlPullParser.getEventType();
+
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    String tag;
+                    switch (eventType) {
+                        case XmlPullParser.START_TAG:
+                            tag = xmlPullParser.getName();
+                            if (tag.equals(RSS_TAG_NAME_PREFECTURE)) {
+                                pref = xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_TITLE);
+                            } else if (tag.equals(RSS_TAG_NAME_CITY)) {
+                                location = new Location();
+                                location.setPrefecture(pref);
+                                location.setCity(xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_TITLE));
+                                location.setId(xmlPullParser.getAttributeValue(null, RSS_VALUE_NAME_ID));
+                                locations.add(location);
+                            }
+                    }
+                    eventType = xmlPullParser.next();
+                }
+
+                return locations;
+            }
+        };
+
+        rssTask.execute(RSS_URL);
     }
 }

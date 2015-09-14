@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
+import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
@@ -39,7 +40,7 @@ public class MainActivity extends BaseActivity {
             case REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle bundle = data.getExtras();
-                    apiHelper.requestWeather(bundle.getString("id"), getSupportFragmentManager());
+                    apiHelper.requestWeather(bundle.getString(Location.FIELD_NAME_ID), getSupportFragmentManager());
                 }
                 break;
             default:
