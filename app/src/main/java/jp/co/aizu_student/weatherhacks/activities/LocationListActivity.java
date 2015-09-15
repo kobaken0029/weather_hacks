@@ -26,7 +26,7 @@ public class LocationListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_list);
 
-        initToolbar();
+        initToolbar(R.string.location_list, true, false, null);
         rssHelper.rssParse(this);
     }
 

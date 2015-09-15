@@ -3,6 +3,7 @@ package jp.co.aizu_student.weatherhacks.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.R;
@@ -31,12 +32,26 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * toolbarの初期化。
      */
-    protected void initToolbar() {
+    protected void initToolbar(int titleId, boolean isShowBackArrow, boolean isShowMenu,
+                               Toolbar.OnMenuItemClickListener menuItemClickListener) {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_menu);
-
-        mToolbar.setTitle(R.string.app_name);
+        mToolbar.setTitle(titleId);
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        setSupportActionBar(mToolbar);
+
+        if (isShowMenu) {
+            mToolbar.inflateMenu(R.menu.main_menu);
+            mToolbar.setOnMenuItemClickListener(menuItemClickListener);
+        }
+
+        if (isShowBackArrow) {
+            mToolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
 }

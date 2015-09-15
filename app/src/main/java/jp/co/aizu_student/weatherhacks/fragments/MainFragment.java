@@ -12,6 +12,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.activities.MainActivity;
@@ -20,7 +21,6 @@ import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
-import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
 import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
@@ -67,7 +67,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        apiHelper.requestWeather(ApiContents.PARAM_AIZU, mMainActivity.getSupportFragmentManager());
+        String param = MyApplication.newInstance().getLocationId();
+        apiHelper.requestWeather(param, mMainActivity.getSupportFragmentManager());
     }
 
     /**
