@@ -8,7 +8,7 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_wh"
+        android:icon="@mipmap/ic_wh"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
