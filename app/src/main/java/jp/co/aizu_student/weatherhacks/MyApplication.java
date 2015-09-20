@@ -20,6 +20,8 @@ public class MyApplication extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
+    private String mLocationId;
+
     public static MyApplication newInstance() {
         if (myApplication == null) {
             myApplication = new MyApplication();
@@ -110,5 +112,13 @@ public class MyApplication extends Application {
         public void putBitmap(String url, Bitmap bitmap) {
             mMemoryCache.put(url, bitmap);
         }
+    }
+
+    public String getLocationId() {
+        return mLocationId;
+    }
+
+    public void setLocationId(String mLocationId) {
+        this.mLocationId = mLocationId;
     }
 }
