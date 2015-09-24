@@ -42,7 +42,9 @@ public class AsyncLoaderImageView extends ImageView
 
     @Override
     public void onLoadFinished(Loader<Bitmap> loader, Bitmap bm) {
-        setImageBitmap(bm);
+        if (bm != null) {
+            setImageBitmap(bm);
+        }
     }
 
     @Override

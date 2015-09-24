@@ -1,42 +1,46 @@
 package jp.co.aizu_student.weatherhacks.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.Gson;
+import javax.inject.Inject;
 
-import org.json.JSONObject;
-
+import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
+import jp.co.aizu_student.weatherhacks.activities.MainActivity;
+import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
-import jp.co.aizu_student.weatherhacks.network.ApiContents;
+import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
 import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
+import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
 
 public class MainFragment extends Fragment {
-    private Activity mActivity;
+    private MainActivity mMainActivity;
     private TextView mWeatherTextView;
     private TextView mPrefTextView;
     private TextView mMaxTempTextView;
     private TextView mMinTempTextView;
     private AsyncLoaderImageView mImageView;
 
+    @Inject
+    WeatherHacksApiHelper apiHelper;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
+        mMainActivity = (MainActivity) activity;
+        injectModule();
     }
 
     @Override
@@ -48,37 +52,31 @@ public class MainFragment extends Fragment {
         mMaxTempTextView = (TextView) view.findViewById(R.id.max_temperature_text);
         mMinTempTextView = (TextView) view.findViewById(R.id.min_temperature_text);
         mImageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
+
+        mPrefTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mMainActivity, LocationListActivity.class);
+                mMainActivity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
+            }
+        });
+
         return view;
     }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        requestToWeatherHacks(ApiContents.PARAM_AIZU);
+        String param = MyApplication.newInstance().getLocationId();
+        apiHelper.requestWeather(param, mMainActivity.getSupportFragmentManager());
     }
 
     /**
-     * WeatherHacksのAPIに対してリクエストする。
-     *
-     * @param parameter パラメータ(対象の地域ID)
+     * DIする。
      */
-    public void requestToWeatherHacks(String parameter) {
-        String url = ApiContents.BASE_URL + ApiContents.API_URL + parameter;
-
-        MyApplication.newInstance().getRequestQueue().add(
-                new JsonObjectRequest(ApiContents.HTTP_GET, url, (String) null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
-                        setViewFromWeatherInfo(weatherInfo);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // エラーが発生した場合
-                        Log.d("VolleySample", error.toString());
-                    }
-                }));
+    private void injectModule() {
+        ObjectGraph objectGraph = ObjectGraph.create(new WeatherHacksModule());
+        objectGraph.inject(this);
     }
 
     /**
@@ -86,21 +84,21 @@ public class MainFragment extends Fragment {
      *
      * @param info 天気情報
      */
-    private void setViewFromWeatherInfo(WeatherInfo info) {
-        Forecast forecast = info.getForecasts().get(getArguments().getInt("targetDay"));
+    public void setViewFromWeatherInfo(WeatherInfo info) {
+        Forecast forecast = info.getForecasts().get(getArguments().getInt(MyPagerAdapter.KEY_TARGET_DAY));
         Temperature temperature = forecast.getTemperature();
 
-        mPrefTextView.setText(info.getLocation().getPrefecture());
+        mPrefTextView.setText(info.getLocation().getPrefecture() + " " + info.getLocation().getCity());
         mWeatherTextView.setText(forecast.getTelop());
         mMaxTempTextView.setText(temperature.getMax() != null
-                ? temperature.getMax().get("celsius") + getMessage(R.string.celsius_symbol)
+                ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
                 : "");
         mMinTempTextView.setText(temperature.getMin() != null
-                ? temperature.getMin().get("celsius") + getMessage(R.string.celsius_symbol)
+                ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
                 : "");
 
         mImageView.setImageUrl(forecast.getImage().getUrl());
-        getLoaderManager().initLoader(0, null, mImageView).forceLoad();
+        getLoaderManager().restartLoader(0, null, mImageView).forceLoad();
     }
 
     /**
@@ -110,6 +108,6 @@ public class MainFragment extends Fragment {
      * @return メッセージ
      */
     private String getMessage(int msgId) {
-        return mActivity.getString(msgId);
+        return mMainActivity.getString(msgId);
     }
 }
