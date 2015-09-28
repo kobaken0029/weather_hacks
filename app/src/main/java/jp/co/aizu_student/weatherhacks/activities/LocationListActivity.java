@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
@@ -28,6 +29,7 @@ public class LocationListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_list);
+        ButterKnife.bind(this);
 
         initToolbar(R.string.location_list, true, false, null);
         rssHelper.rssParse(this);

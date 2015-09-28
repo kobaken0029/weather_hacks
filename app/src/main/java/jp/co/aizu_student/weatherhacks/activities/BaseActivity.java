@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
@@ -23,7 +22,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectModule();
-        ButterKnife.bind(this);
     }
 
     /**
