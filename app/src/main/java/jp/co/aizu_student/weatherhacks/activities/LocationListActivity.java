@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
@@ -17,6 +18,8 @@ import jp.co.aizu_student.weatherhacks.views.adapters.LocationListAdapter;
 
 
 public class LocationListActivity extends BaseActivity {
+    @Bind(R.id.location_listview)
+    ListView mLocationListView;
 
     @Inject
     WeatherHacksRssHelper rssHelper;
@@ -33,10 +36,9 @@ public class LocationListActivity extends BaseActivity {
     public void initLocationListView(List<Location> locations) {
         if (locations == null) return;
 
-        final ListView locationListView = (ListView) findViewById(R.id.location_listview);
         LocationListAdapter adapter = new LocationListAdapter(this, 0, locations);
-        locationListView.setAdapter(adapter);
-        locationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mLocationListView.setAdapter(adapter);
+        mLocationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView l = (ListView) parent;

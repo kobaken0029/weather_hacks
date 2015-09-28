@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
@@ -29,6 +30,12 @@ public class MainActivity extends BaseActivity {
     /** SharedPreferencesのKey */
     private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
+
+    @Bind(R.id.tab_layout)
+    TabLayout mTabLayout;
+
+    @Bind(R.id.view_pager)
+    ViewPager mViewPager;
 
     @Inject
     WeatherHacksApiHelper apiHelper;
@@ -94,9 +101,6 @@ public class MainActivity extends BaseActivity {
      * tabの初期化。
      */
     private void initTabLayout() {
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.view_pager);
-
         new MyPagerAdapter(this, mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
