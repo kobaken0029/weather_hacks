@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.models.Location;
 
@@ -19,11 +21,12 @@ import jp.co.aizu_student.weatherhacks.models.Location;
 public class LocationListAdapter extends ArrayAdapter<Location> {
     private LayoutInflater mLayoutInflater;
 
-    private class ViewHolder {
+    static class ViewHolder {
+        @Bind(R.id.location)
         TextView mLocationText;
 
         ViewHolder(View view) {
-            mLocationText = (TextView) view.findViewById(R.id.location);
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -46,7 +49,8 @@ public class LocationListAdapter extends ArrayAdapter<Location> {
         }
 
         if (location != null) {
-            holder.mLocationText.setText(location.getPrefecture() + " " + location.getCity());
+            String locationText = location.getPrefecture() + " " + location.getCity();
+            holder.mLocationText.setText(locationText);
         }
 
         return convertView;
