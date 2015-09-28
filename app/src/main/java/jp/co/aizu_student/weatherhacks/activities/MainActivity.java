@@ -9,11 +9,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
@@ -29,6 +30,12 @@ public class MainActivity extends BaseActivity {
     /** SharedPreferencesのKey */
     private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
+
+    @Bind(R.id.tab_layout)
+    TabLayout mTabLayout;
+
+    @Bind(R.id.view_pager)
+    ViewPager mViewPager;
 
     @Inject
     WeatherHacksApiHelper apiHelper;
@@ -57,6 +64,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
         MyApplication myApplication = MyApplication.newInstance();
@@ -94,9 +102,6 @@ public class MainActivity extends BaseActivity {
      * tabの初期化。
      */
     private void initTabLayout() {
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.view_pager);
-
         new MyPagerAdapter(this, mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

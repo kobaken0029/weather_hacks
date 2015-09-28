@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import butterknife.Bind;
 import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
@@ -14,6 +15,8 @@ import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
  * Created by koba on 2015/09/10.
  */
 public class BaseActivity extends AppCompatActivity {
+    @Bind(R.id.toolbar_menu)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,6 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void initToolbar(int titleId, boolean isShowBackArrow, boolean isShowMenu,
                                Toolbar.OnMenuItemClickListener menuItemClickListener) {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_menu);
         mToolbar.setTitle(titleId);
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 
