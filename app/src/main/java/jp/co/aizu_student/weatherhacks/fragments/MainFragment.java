@@ -66,8 +66,20 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         /* ===WeatherHacksのAPIにリクエストを送り、レスポンス情報を画面に表示=== */
+
+        requestToWeatherHacks("070030");
+
+        /* ============================================================== */
+    }
+
+    /**
+     * お天気APIから天気情報を取得するためのリクエストを投げる。
+     *
+     * @param param パラメータ
+     */
+    public void requestToWeatherHacks(String param) {
         // APIのURLを取得
-        String url = "http://weather.livedoor.com/forecast/webservice/json/v1?city=" + "070030";
+        String url = "http://weather.livedoor.com/forecast/webservice/json/v1?city=" + param;
 
         // RequestQueueを取得
         RequestQueue mRequestQueue = Volley.newRequestQueue(mActivity);
@@ -86,20 +98,19 @@ public class MainFragment extends Fragment {
                 Temperature temperature = forecast.getTemperature();
 
                 // 各Viewに値を設定
-                mPrefTextView.setText(location.getPrefecture() + " " + location.getCity());
+                String prefectureText = location.getPrefecture() + " " + location.getCity();
+                mPrefTextView.setText(prefectureText);
                 mWeatherTextView.setText(forecast.getTelop());
-                if (temperature.getMax() != null) {
-                    mMaxTempTextView.setText(temperature.getMax().get("celsius")
-                            + mActivity.getString(R.string.celsius_symbol));
-                } else {
-                    mMaxTempTextView.setText("");
-                }
-                if (temperature.getMax() != null) {
-                    mMinTempTextView.setText(temperature.getMin().get("celsius")
-                            + mActivity.getString(R.string.celsius_symbol));
-                } else {
-                    mMinTempTextView.setText("");
-                }
+
+                String maxTemperatureText = temperature.getMax() != null
+                        ? temperature.getMax().get("celsius") + mActivity.getString(R.string.celsius_symbol)
+                        : "";
+                mMaxTempTextView.setText(maxTemperatureText);
+
+                String minTemperatureText = temperature.getMin() != null
+                        ? temperature.getMin().get("celsius") + mActivity.getString(R.string.celsius_symbol)
+                        : "";
+                mMinTempTextView.setText(minTemperatureText);
 
                 // 画像をカスタムView(ImageView)に設定
                 mImageView.setImageUrl(forecast.getImage().getUrl());
@@ -123,7 +134,5 @@ public class MainFragment extends Fragment {
 
         // リクエストをRequestQueueに追加
         mRequestQueue.add(request);
-
-        /* ============================================================== */
     }
 }

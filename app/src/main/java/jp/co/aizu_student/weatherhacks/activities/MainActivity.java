@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 MainFragment ff = (MainFragment) f;
 
                 // Fragmentにあるリクエスト関数を呼び出す
-//                ff.requestToWeatherHacks(ApiContents.PARAM_AIZU);
+                ff.requestToWeatherHacks("070030");
             }
 
             // Snackbarで更新したことを知らせる
