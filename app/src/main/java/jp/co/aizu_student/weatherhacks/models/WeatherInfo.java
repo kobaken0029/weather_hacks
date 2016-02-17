@@ -2,10 +2,6 @@ package jp.co.aizu_student.weatherhacks.models;
 
 import java.util.List;
 
-
-/**
- * Created by koba on 2015/09/06.
- */
 public class WeatherInfo {
     private List<Forecast> forecasts;
     private Location location;

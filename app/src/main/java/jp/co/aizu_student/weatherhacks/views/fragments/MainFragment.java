@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.fragments;
+package jp.co.aizu_student.weatherhacks.views.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
-import jp.co.aizu_student.weatherhacks.activities.MainActivity;
+import jp.co.aizu_student.weatherhacks.views.activities.LocationListActivity;
+import jp.co.aizu_student.weatherhacks.views.activities.MainActivity;
 import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
@@ -25,7 +27,7 @@ import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
-import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
+import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainFragment extends Fragment implements WeatherInfoHandler {
     /** Bundle Key */
@@ -70,6 +72,12 @@ public class MainFragment extends Fragment implements WeatherInfoHandler {
         apiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
     }
 
+    @Override
+    public void onDestroy() {
+        apiHelper.onDestroy();
+        super.onDestroy();
+    }
+
     /**
      * DIする。
      */
@@ -93,8 +101,11 @@ public class MainFragment extends Fragment implements WeatherInfoHandler {
         binding.setLocation(location);
         binding.setTemperature(temperature);
 
-        binding.weatherImage.setImageUrl(forecast.getImage().getUrl());
-        getLoaderManager().restartLoader(0, null, binding.weatherImage).forceLoad();
+        Picasso.with(getActivity())
+                .load(forecast.getImage().getUrl())
+                .fit()
+                .error(R.drawable.no_image)
+                .into(binding.weatherImage);
     }
 
     /**

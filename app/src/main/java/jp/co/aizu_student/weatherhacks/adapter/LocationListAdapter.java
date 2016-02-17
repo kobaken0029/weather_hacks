@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.views.adapters;
+package jp.co.aizu_student.weatherhacks.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;

@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.views.adapters;
+package jp.co.aizu_student.weatherhacks.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
+import jp.co.aizu_student.weatherhacks.views.fragments.MainFragment;
 
 public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
     /** タグ */

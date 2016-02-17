@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.activities;
+package jp.co.aizu_student.weatherhacks.views.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 
 import javax.inject.Inject;
@@ -18,8 +17,7 @@ import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.network.ApiContents;
-import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
+import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainActivity extends BaseActivity {
     /** リクエストコード */
@@ -40,9 +38,6 @@ public class MainActivity extends BaseActivity {
             if (item.getItemId() == R.id.refresh) {
                 String param = MyApplication.newInstance().getLocationId();
 
-                if (TextUtils.isEmpty(param)) {
-                    MyApplication.newInstance().setLocationId(ApiContents.PARAM_AIZU);
-                }
                 apiHelper.requestWeather(param, getSupportFragmentManager());
 
                 Snackbar.make(binding.viewPager, getString(R.string.refresh_message), Snackbar.LENGTH_SHORT).show();
@@ -58,7 +53,7 @@ public class MainActivity extends BaseActivity {
 
         SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
         MyApplication myApplication = MyApplication.newInstance();
-        myApplication.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ApiContents.PARAM_AIZU));
+        myApplication.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ""));
 
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();

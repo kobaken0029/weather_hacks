@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.activities;
+package jp.co.aizu_student.weatherhacks.views.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

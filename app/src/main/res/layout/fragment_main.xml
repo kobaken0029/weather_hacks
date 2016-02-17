@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="jp.co.aizu_student.weatherhacks.fragments.MainFragment" />
+        <import type="jp.co.aizu_student.weatherhacks.views.fragments.MainFragment" />
 
         <import type="jp.co.aizu_student.weatherhacks.models.Forecast" />
 
@@ -30,78 +30,76 @@
             type="Temperature" />
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:gravity="start"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/pref_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="@{fragment.onClickPrefText}"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{(location.getPrefecture() ?? "") + " " + (location.getCity() ?? "")}'
+            android:textSize="24sp"
+            tools:text="東京都" />
+
+        <TextView
+            android:id="@+id/max_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{temperature.getMax() != null ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            tools:text="27℃" />
+
+        <TextView
+            android:id="@+id/min_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{temperature.getMin() != null ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
+            android:textColor="#0000FF"
+            android:textSize="24sp"
+            tools:text="27℃" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/weather_image"
+                android:layout_width="168dp"
+                android:layout_height="144dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/weather_info"
+                tools:src="@drawable/no_image" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/weather_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text='@{forecast.getTelop() ?? ""}'
+            android:textSize="80sp"
+            tools:text="晴れ" />
 
-            <TextView
-                android:id="@+id/pref_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:onClick="@{fragment.onClickPrefText}"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="@{location.getPrefecture() + ' ' + location.getCity()}"
-                android:textSize="24sp"
-                tools:text="東京都" />
-
-            <TextView
-                android:id="@+id/max_temperature_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text='@{temperature.getMax() != null ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
-                android:textColor="#FF0000"
-                android:textSize="24sp"
-                tools:text="27℃" />
-
-            <TextView
-                android:id="@+id/min_temperature_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text='@{temperature.getMin() != null ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
-                android:textColor="#0000FF"
-                android:textSize="24sp"
-                tools:text="27℃" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView
-                    android:id="@+id/weather_image"
-                    android:layout_width="200dp"
-                    android:layout_height="180dp"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/weather_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@{forecast.getTelop()}"
-                android:textSize="80sp"
-                tools:text="晴れ" />
-
-        </LinearLayout>
-
-    </FrameLayout>
+    </LinearLayout>
 </layout>
