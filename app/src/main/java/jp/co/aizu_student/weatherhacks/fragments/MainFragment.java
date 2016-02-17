@@ -1,13 +1,14 @@
 package jp.co.aizu_student.weatherhacks.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -16,59 +17,57 @@ import jp.co.aizu_student.weatherhacks.MyApplication;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.activities.MainActivity;
+import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
+import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
-import jp.co.aizu_student.weatherhacks.views.adapters.AsyncLoaderImageView;
 import jp.co.aizu_student.weatherhacks.views.adapters.MyPagerAdapter;
 
-
-public class MainFragment extends Fragment {
-    private MainActivity mMainActivity;
-    private TextView mWeatherTextView;
-    private TextView mPrefTextView;
-    private TextView mMaxTempTextView;
-    private TextView mMinTempTextView;
-    private AsyncLoaderImageView mImageView;
+public class MainFragment extends Fragment implements WeatherInfoHandler {
+    /** Bundle Key */
+    private static final String KEY_TARGET_DAY = "target_day";
 
     @Inject
     WeatherHacksApiHelper apiHelper;
 
+    private FragmentMainBinding binding;
+
+    public static MainFragment newInstance(int position) {
+        MainFragment fragment = new MainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_TARGET_DAY, position);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mMainActivity = (MainActivity) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
         injectModule();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-        mWeatherTextView = (TextView) view.findViewById(R.id.weather_text);
-        mPrefTextView = (TextView) view.findViewById(R.id.pref_text);
-        mMaxTempTextView = (TextView) view.findViewById(R.id.max_temperature_text);
-        mMinTempTextView = (TextView) view.findViewById(R.id.min_temperature_text);
-        mImageView = (AsyncLoaderImageView) view.findViewById(R.id.weather_image);
+        return inflater.inflate(R.layout.fragment_main, container, false);
+    }
 
-        mPrefTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mMainActivity, LocationListActivity.class);
-                mMainActivity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
-            }
-        });
-
-        return view;
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        binding = DataBindingUtil.bind(view);
+        binding.setFragment(this);
     }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String param = MyApplication.newInstance().getLocationId();
-        apiHelper.requestWeather(param, mMainActivity.getSupportFragmentManager());
+        apiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -84,21 +83,18 @@ public class MainFragment extends Fragment {
      *
      * @param info 天気情報
      */
+    @Override
     public void setViewFromWeatherInfo(WeatherInfo info) {
         Forecast forecast = info.getForecasts().get(getArguments().getInt(MyPagerAdapter.KEY_TARGET_DAY));
+        Location location = info.getLocation();
         Temperature temperature = forecast.getTemperature();
 
-        mPrefTextView.setText(info.getLocation().getPrefecture() + " " + info.getLocation().getCity());
-        mWeatherTextView.setText(forecast.getTelop());
-        mMaxTempTextView.setText(temperature.getMax() != null
-                ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
-                : "");
-        mMinTempTextView.setText(temperature.getMin() != null
-                ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + getMessage(R.string.celsius_symbol)
-                : "");
+        binding.setForecast(forecast);
+        binding.setLocation(location);
+        binding.setTemperature(temperature);
 
-        mImageView.setImageUrl(forecast.getImage().getUrl());
-        getLoaderManager().restartLoader(0, null, mImageView).forceLoad();
+        binding.weatherImage.setImageUrl(forecast.getImage().getUrl());
+        getLoaderManager().restartLoader(0, null, binding.weatherImage).forceLoad();
     }
 
     /**
@@ -107,7 +103,12 @@ public class MainFragment extends Fragment {
      * @param msgId メッセージID
      * @return メッセージ
      */
-    private String getMessage(int msgId) {
-        return mMainActivity.getString(msgId);
+    public String getMessage(int msgId) {
+        return getActivity().getString(msgId);
+    }
+
+    public void onClickPrefText(View v) {
+        Intent intent = new Intent(getActivity(), LocationListActivity.class);
+        getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE);
     }
 }

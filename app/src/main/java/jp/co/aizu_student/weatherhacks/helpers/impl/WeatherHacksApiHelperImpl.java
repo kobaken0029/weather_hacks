@@ -12,15 +12,11 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import jp.co.aizu_student.weatherhacks.MyApplication;
-import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 
-
-/**
- * Created by koba on 2015/09/10.
- */
 public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
     /** タグ */
     private static final String TAG = WeatherHacksApiHelper.class.getName();
@@ -34,9 +30,9 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
             public void onResponse(JSONObject response) {
                 Log.d(TAG, response.toString());
                 WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
-                for (Fragment f : fragmentManager.getFragments()) {
-                    MainFragment targetFragment = (MainFragment) f;
-                    targetFragment.setViewFromWeatherInfo(weatherInfo);
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    WeatherInfoHandler weatherInfoHandler = (WeatherInfoHandler) fragment;
+                    weatherInfoHandler.setViewFromWeatherInfo(weatherInfo);
                 }
             }
         };

@@ -1,15 +1,15 @@
 package jp.co.aizu_student.weatherhacks.views.adapters;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
-
 
 public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
     /** タグ */
@@ -24,13 +24,11 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.On
     /** BundleのKey */
     public static final String KEY_TARGET_DAY = "target_day";
 
-    private AppCompatActivity mActivity;
+    private Context context;
 
-    public MyPagerAdapter(AppCompatActivity activity, ViewPager viewPager) {
-        super(activity.getSupportFragmentManager());
-        mActivity = activity;
-        viewPager.setAdapter(this);
-        viewPager.addOnPageChangeListener(this);
+    public MyPagerAdapter(FragmentManager fragmentManager, Context context) {
+        super(fragmentManager);
+        this.context = context;
     }
 
     @Override
@@ -46,15 +44,8 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.On
     }
 
     @Override
-    public Fragment getItem(final int position) {
-        Log.d(TAG, String.valueOf(position));
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_TARGET_DAY, position);
-
-        MainFragment fragment = new MainFragment();
-        fragment.setArguments(bundle);
-
-        return fragment;
+    public Fragment getItem(int position) {
+        return MainFragment.newInstance(position);
     }
 
     @Override
@@ -65,7 +56,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.On
     @Override
     public CharSequence getPageTitle(int position) {
         return position == TAB_TODAY
-                ? mActivity.getString(R.string.today)
-                : mActivity.getString(R.string.tomorrow);
+                ? context.getString(R.string.today)
+                : context.getString(R.string.tomorrow);
     }
 }
