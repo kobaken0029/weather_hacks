@@ -1,6 +1,5 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
@@ -14,8 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
+import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 import jp.co.aizu_student.weatherhacks.models.Location;
 
 public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
@@ -36,7 +35,7 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     private static List<Location> locations;
 
     @Override
-    public void rssParse(final Activity activity) {
+    public void rssParse(final LocationListHandler handler) {
         AsyncTask<String, Integer, List<Location>> rssTask = new AsyncTask<String, Integer, List<Location>>() {
             @Override
             protected List<Location> doInBackground(String... params) {
@@ -59,9 +58,7 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
 
             @Override
             protected void onPostExecute(List<Location> locations) {
-                if (activity instanceof LocationListActivity) {
-                    ((LocationListActivity) activity).initLocationListView(locations);
-                }
+                handler.initLocationListView(locations);
             }
 
             private List<Location> parse(InputStream is) throws IOException, XmlPullParserException {

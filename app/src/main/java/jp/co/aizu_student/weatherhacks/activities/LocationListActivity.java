@@ -11,10 +11,11 @@ import javax.inject.Inject;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityLocationListBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
+import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.views.adapters.LocationListAdapter;
 
-public class LocationListActivity extends BaseActivity {
+public class LocationListActivity extends BaseActivity implements LocationListHandler {
 
     @Inject
     WeatherHacksRssHelper rssHelper;
@@ -30,6 +31,7 @@ public class LocationListActivity extends BaseActivity {
         rssHelper.rssParse(this);
     }
 
+    @Override
     public void initLocationListView(List<Location> locations) {
         if (locations == null) {
             return;
