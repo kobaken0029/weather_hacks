@@ -1,10 +1,10 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.annimon.stream.Stream;
 import com.google.gson.Gson;
 
 import jp.co.aizu_student.weatherhacks.MyApplication;
@@ -25,17 +25,12 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                         ApiContents.BASE_URL + ApiContents.API_URL + parameter,
                         (String) null,
                         response -> {
-                            Log.d(TAG, response.toString());
                             WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
-                            for (Fragment fragment : fragmentManager.getFragments()) {
-                                WeatherInfoHandler weatherInfoHandler = (WeatherInfoHandler) fragment;
-                                weatherInfoHandler.setViewFromWeatherInfo(weatherInfo);
-                            }
+                            Stream.of(fragmentManager.getFragments()).forEach(handler ->
+                                    ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)
+                            );
                         },
-                        error -> {
-                            // エラーが発生した場合
-                            Log.e(TAG, error.toString());
-                        }
+                        error -> Log.e(TAG, error.toString())
                 )
         );
     }
