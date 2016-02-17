@@ -10,10 +10,6 @@ import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.helpers.impl.WeatherHacksApiHelperImpl;
 import jp.co.aizu_student.weatherhacks.helpers.impl.WeatherHacksRssHelperImpl;
 
-
-/**
- * Created by koba on 2015/09/10.
- */
 @Module(injects = { MainActivity.class, MainFragment.class, LocationListActivity.class})
 public class WeatherHacksModule {
 

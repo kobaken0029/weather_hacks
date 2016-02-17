@@ -1,8 +1,5 @@
 package jp.co.aizu_student.weatherhacks.network;
 
-/**
- * Created by koba on 2015/06/18.
- */
 public class ApiContents {
     public static final String BASE_URL = "http://weather.livedoor.com/";
     public static final String API_URL = "forecast/webservice/json/v1?city=";

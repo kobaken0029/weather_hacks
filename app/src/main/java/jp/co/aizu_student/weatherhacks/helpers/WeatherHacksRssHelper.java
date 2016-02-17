@@ -1,11 +1,7 @@
 package jp.co.aizu_student.weatherhacks.helpers;
 
-import android.app.Activity;
+import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 
-
-/**
- * Created by koba on 2015/09/10.
- */
 public interface WeatherHacksRssHelper {
-    void rssParse(Activity activity);
+    void rssParse(LocationListHandler handler);
 }
