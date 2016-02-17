@@ -2,10 +2,6 @@ package jp.co.aizu_student.weatherhacks.models;
 
 import java.util.HashMap;
 
-
-/**
- * Created by koba on 2015/09/06.
- */
 public class Temperature {
     /** HASH値のkey */
     public static final String HASH_KEY_CELSIUS = "celsius";

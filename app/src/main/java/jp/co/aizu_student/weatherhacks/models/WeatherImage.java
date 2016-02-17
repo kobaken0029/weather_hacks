@@ -1,8 +1,5 @@
 package jp.co.aizu_student.weatherhacks.models;
 
-/**
- * Created by koba on 2015/09/06.
- */
 public class WeatherImage {
     private int width;
     private int height;

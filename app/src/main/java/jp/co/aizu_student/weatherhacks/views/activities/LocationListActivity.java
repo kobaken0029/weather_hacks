@@ -1,4 +1,4 @@
-package jp.co.aizu_student.weatherhacks.activities;
+package jp.co.aizu_student.weatherhacks.views.activities;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -13,7 +13,7 @@ import jp.co.aizu_student.weatherhacks.databinding.ActivityLocationListBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.views.adapters.LocationListAdapter;
+import jp.co.aizu_student.weatherhacks.adapter.LocationListAdapter;
 
 public class LocationListActivity extends BaseActivity implements LocationListHandler {
 
@@ -52,5 +52,4 @@ public class LocationListActivity extends BaseActivity implements LocationListHa
             finish();
         });
     }
-
 }

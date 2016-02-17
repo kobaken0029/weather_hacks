@@ -1,13 +1,8 @@
 package jp.co.aizu_student.weatherhacks.network;
 
 public class ApiContents {
-    public static final String BASE_URL = "http://weather.livedoor.com/";
-    public static final String API_URL = "forecast/webservice/json/v1?city=";
-    public static final int HTTP_CONNECT_TIMEOUT = 6000; // milliseconds
-    public static final int HTTP_READ_TIMEOUT = 10000; // milliseconds
-    public static final int HTTP_GET = 0;
-    public static final int HTTP_POST = 1;
-    public static final String PARAM_AIZU = "070030";
+    public static final String BASE_URL = "http://weather.livedoor.com";
+    public static final String API_URL = "forecast/webservice/json/v1";
 
     public static String RESPONSE_VALUE_SUCCESS = "success";
     public static String PARAM_VALUE_OFF = "0";
