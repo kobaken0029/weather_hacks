@@ -10,10 +10,6 @@ import android.widget.ImageView;
 
 import jp.co.aizu_student.weatherhacks.network.AsyncImageLoader;
 
-
-/**
- * Created by koba on 2015/06/18.
- */
 public class AsyncLoaderImageView extends ImageView
         implements LoaderManager.LoaderCallbacks<Bitmap> {
     private String url;

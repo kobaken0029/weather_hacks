@@ -9,10 +9,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
-/**
- * Created by koba on 2015/06/18.
- */
 public class AsyncImageLoader extends AsyncTaskLoader<Bitmap> {
     private String url;
 

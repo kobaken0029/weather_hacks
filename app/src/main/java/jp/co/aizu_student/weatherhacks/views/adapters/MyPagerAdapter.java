@@ -1,12 +1,10 @@
 package jp.co.aizu_student.weatherhacks.views.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.fragments.MainFragment;

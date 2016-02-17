@@ -3,7 +3,6 @@ package jp.co.aizu_student.weatherhacks.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import dagger.ObjectGraph;
 import jp.co.aizu_student.weatherhacks.R;
@@ -40,12 +39,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if (isShowBackArrow) {
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+            toolbar.setNavigationOnClickListener(v -> finish());
         }
     }
 

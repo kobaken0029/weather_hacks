@@ -18,10 +18,6 @@ import jp.co.aizu_student.weatherhacks.activities.LocationListActivity;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 
-
-/**
- * Created by koba on 2015/09/10.
- */
 public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     /** タグ */
     private static final String TAG = WeatherHacksRssHelper.class.getName();

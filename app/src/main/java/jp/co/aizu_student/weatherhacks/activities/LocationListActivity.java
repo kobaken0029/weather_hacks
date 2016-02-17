@@ -3,8 +3,6 @@ package jp.co.aizu_student.weatherhacks.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 
 import java.util.List;
 
@@ -39,20 +37,17 @@ public class LocationListActivity extends BaseActivity {
 
         LocationListAdapter locationListAdapter = new LocationListAdapter(this, 0, locations);
         binding.locationListview.setAdapter(locationListAdapter);
-        binding.locationListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Location location = (Location) parent.getItemAtPosition(position);
+        binding.locationListview.setOnItemClickListener((parent, v, position, id) -> {
+            Location location = (Location) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putString(Location.FIELD_NAME_ID, location.getId());
-                bundle.putString(Location.FIELD_NAME_CITY, location.getCity());
-                intent.putExtras(bundle);
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString(Location.FIELD_NAME_ID, location.getId());
+            bundle.putString(Location.FIELD_NAME_CITY, location.getCity());
+            intent.putExtras(bundle);
 
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+            setResult(RESULT_OK, intent);
+            finish();
         });
     }
 
