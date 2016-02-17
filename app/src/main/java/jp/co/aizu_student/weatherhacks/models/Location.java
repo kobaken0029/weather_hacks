@@ -4,9 +4,22 @@ package jp.co.aizu_student.weatherhacks.models;
  * Created by koba on 2015/09/06.
  */
 public class Location {
+    /** フィールド名 */
+    public static final String FIELD_NAME_ID = "id";
+    public static final String FIELD_NAME_CITY = "city";
+
+    private String id;
     private String city;
     private String area;
     private String prefecture;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getCity() {
         return city;

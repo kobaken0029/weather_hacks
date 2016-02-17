@@ -12,11 +12,17 @@ import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
 
 
 public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
+    /** タグ */
+    private static final String TAG = MyPagerAdapter.class.getName();
+
     /** 今日 */
     private static final int TAB_TODAY = 0;
 
     /** タブの総数 */
     private static final int MAX_NUMBER_OF_TAB = 2;
+
+    /** BundleのKey */
+    public static final String KEY_TARGET_DAY = "target_day";
 
     private AppCompatActivity mActivity;
 
@@ -41,9 +47,9 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.On
 
     @Override
     public Fragment getItem(final int position) {
-        Log.d("ADAPTER", String.valueOf(position));
+        Log.d(TAG, String.valueOf(position));
         Bundle bundle = new Bundle();
-        bundle.putInt("targetDay", position);
+        bundle.putInt(KEY_TARGET_DAY, position);
 
         MainFragment fragment = new MainFragment();
         fragment.setArguments(bundle);
