@@ -21,8 +21,6 @@ import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
-import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.models.Temperature;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
