@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
 
     @Inject
-    WeatherHacksApiHelper apiHelper;
+    WeatherHacksApiHelper weatherHacksApiHelper;
 
     private ActivityMainBinding binding;
 
@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
             if (item.getItemId() == R.id.refresh) {
                 String param = WeatherHacks.getInstance().getLocationId();
 
-                apiHelper.requestWeather(param, getSupportFragmentManager());
+                weatherHacksApiHelper.requestWeather(param, getSupportFragmentManager());
 
                 Snackbar.make(binding.viewPager, getString(R.string.refresh_message), Snackbar.LENGTH_SHORT).show();
             }
@@ -62,7 +62,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        apiHelper = null;
+        weatherHacksApiHelper.onDestroy();
+        weatherHacksApiHelper = null;
         super.onDestroy();
     }
 
@@ -74,7 +75,7 @@ public class MainActivity extends BaseActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     String param = bundle.getString(Location.FIELD_NAME_ID);
-                    apiHelper.requestWeather(param, getSupportFragmentManager());
+                    weatherHacksApiHelper.requestWeather(param, getSupportFragmentManager());
 
                     WeatherHacks weatherHacks = WeatherHacks.getInstance();
                     weatherHacks.setLocationId(param);
