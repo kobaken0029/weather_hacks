@@ -1,27 +1,20 @@
 package jp.co.aizu_student.weatherhacks.views.activities;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import dagger.ObjectGraph;
+import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.modules.WeatherHacksModule;
+import jp.co.aizu_student.weatherhacks.di.components.WeatherHacksComponent;
 
 public class BaseActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        injectModule();
-    }
-
     /**
-     * DIする。
+     * アプリケーションコンポーネントを取得する。
+     * @return アプリケーションコンポーネント
      */
-    private void injectModule() {
-        ObjectGraph objectGraph = ObjectGraph.create(new WeatherHacksModule());
-        objectGraph.inject(this);
+    protected WeatherHacksComponent getApplicationComponent() {
+        return ((WeatherHacks) getApplication()).getWeatherHacksComponent();
     }
 
     /**

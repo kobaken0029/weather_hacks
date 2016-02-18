@@ -1,6 +1,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <import type="android.widget.AdapterView.OnItemClickListener" />
+
+        <variable
+            name="listener"
+            type="OnItemClickListener" />
+    </data>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,7 +25,8 @@
             android:id="@+id/location_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar" />
+            android:layout_below="@id/toolbar"
+            android:onItemClick="@{listener.onItemClick}" />
 
     </RelativeLayout>
 </layout>

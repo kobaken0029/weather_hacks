@@ -4,4 +4,5 @@ import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 
 public interface WeatherHacksRssHelper {
     void rssParse(LocationListHandler handler);
+    void onDestroy();
 }
