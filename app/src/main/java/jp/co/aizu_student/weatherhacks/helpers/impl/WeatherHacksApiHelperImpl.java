@@ -13,13 +13,11 @@ import java.util.Date;
 
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
-import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.network.api.WeatherHacksApi;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -46,24 +44,12 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
         subscription = retrofit.create(WeatherHacksApi.class).get(parameter)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<WeatherInfo>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onNext(WeatherInfo weatherInfo) {
-                        Stream.of(fragmentManager.getFragments()).forEach(handler ->
-                                ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)
-                        );
-                    }
-                });
+                .subscribe(weatherInfo ->
+                                Stream.of(fragmentManager.getFragments())
+                                        .forEach(handler -> ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
+                        throwable -> Log.e(TAG, throwable.toString()),
+                        () -> Log.d(TAG, "onCompleted")
+                );
     }
 
     @Override

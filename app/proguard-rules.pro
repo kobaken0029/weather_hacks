@@ -15,9 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.google.gson.** { *; }
--keep class com.google.inject.** { *; }
--keep class org.apache.http.** { *; }
--keep class org.apache.james.mime4j.** { *; }
--keep class javax.inject.** { *; }
--keep class retrofit.** { *; }
+#-keep class com.google.gson.** { *; }
+#-keep class com.google.inject.** { *; }
+#-keep class org.apache.http.** { *; }
+#-keep class org.apache.james.mime4j.** { *; }
+#-keep class javax.inject.** { *; }
+#-keep class retrofit.** { *; }

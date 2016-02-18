@@ -8,7 +8,7 @@
     <string name="pref_text">　　都道府県:　</string>
     <string name="max_temp_text">予想最高気温:　</string>
     <string name="min_temp_text">予想最低気温:　</string>
-    <string name="celsius_symbol">℃</string>
+    <string name="celsius_symbol">%s ℃</string>
 
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>

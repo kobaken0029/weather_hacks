@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import javax.inject.Inject;
 
-import jp.co.aizu_student.weatherhacks.MyApplication;
+import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.refresh) {
-                String param = MyApplication.newInstance().getLocationId();
+                String param = WeatherHacks.getInstance().getLocationId();
 
                 apiHelper.requestWeather(param, getSupportFragmentManager());
 
@@ -49,14 +49,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplicationComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
-        MyApplication myApplication = MyApplication.newInstance();
-        myApplication.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ""));
+        WeatherHacks weatherHacks = WeatherHacks.getInstance();
+        weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ""));
 
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
+    }
+
+    @Override
+    protected void onDestroy() {
+        apiHelper = null;
+        super.onDestroy();
     }
 
     @Override
@@ -69,8 +76,8 @@ public class MainActivity extends BaseActivity {
                     String param = bundle.getString(Location.FIELD_NAME_ID);
                     apiHelper.requestWeather(param, getSupportFragmentManager());
 
-                    MyApplication myApplication = MyApplication.newInstance();
-                    myApplication.setLocationId(param);
+                    WeatherHacks weatherHacks = WeatherHacks.getInstance();
+                    weatherHacks.setLocationId(param);
 
                     SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();

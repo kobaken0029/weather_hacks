@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="jp.co.aizu_student.weatherhacks.views.fragments.MainFragment" />
+        <import type="android.view.View.OnClickListener" />
 
         <import type="jp.co.aizu_student.weatherhacks.models.Forecast" />
 
@@ -14,8 +14,8 @@
         <import type="jp.co.aizu_student.weatherhacks.R" />
 
         <variable
-            name="fragment"
-            type="MainFragment" />
+            name="listener"
+            type="OnClickListener" />
 
         <variable
             name="forecast"
@@ -26,7 +26,7 @@
             type="Location" />
 
         <variable
-            name="temperature"
+            name="temp"
             type="Temperature" />
     </data>
 
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="@{fragment.onClickPrefText}"
+            android:onClick="@{listener.onClick}"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text='@{(location.getPrefecture() ?? "") + " " + (location.getCity() ?? "")}'
@@ -60,7 +60,7 @@
             android:layout_gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text='@{temperature.getMax() != null ? temperature.getMax().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
+            android:text='@{temp.getMax() != null ? @string/celsius_symbol(temp.getMax().get(Temperature.CELSIUS)) : ""}'
             android:textColor="#FF0000"
             android:textSize="24sp"
             tools:text="27℃" />
@@ -72,7 +72,7 @@
             android:layout_gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text='@{temperature.getMin() != null ? temperature.getMin().get(Temperature.HASH_KEY_CELSIUS) + fragment.getMessage(R.string.celsius_symbol) : ""}'
+            android:text='@{temp.getMin() != null ? @string/celsius_symbol(temp.getMin().get(Temperature.CELSIUS)) : ""}'
             android:textColor="#0000FF"
             android:textSize="24sp"
             tools:text="27℃" />
