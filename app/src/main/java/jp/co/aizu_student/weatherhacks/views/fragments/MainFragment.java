@@ -35,8 +35,6 @@ public class MainFragment extends Fragment
     @Inject
     TextToSpeechHelper textToSpeechHelper;
 
-    private Handler handler;
-
     private FragmentMainBinding binding;
 
     public static MainFragment newInstance(int position) {
@@ -147,8 +145,7 @@ public class MainFragment extends Fragment
 
     @Override
     public void onRefresh() {
-        handler = new Handler();
-        handler.postDelayed(() -> {
+        new Handler().postDelayed(() -> {
             weatherHacksApiHelper.requestWeather(
                     WeatherHacks.getInstance().getLocationId(),
                     getActivity().getSupportFragmentManager()
