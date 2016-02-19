@@ -7,8 +7,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import jp.co.aizu_student.weatherhacks.WeatherHacks;
+import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
+import jp.co.aizu_student.weatherhacks.helpers.impl.TextToSpeechHelperImpl;
 import jp.co.aizu_student.weatherhacks.helpers.impl.WeatherHacksApiHelperImpl;
 import jp.co.aizu_student.weatherhacks.helpers.impl.WeatherHacksRssHelperImpl;
 
@@ -39,5 +41,11 @@ public class WeatherHacksModule {
     @Singleton
     WeatherHacksRssHelper provideWeatherHacksRssHelper() {
         return new WeatherHacksRssHelperImpl();
+    }
+
+    @Provides
+    @Singleton
+    TextToSpeechHelper provideTextToSpeechHelper() {
+        return new TextToSpeechHelperImpl();
     }
 }
