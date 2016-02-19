@@ -76,6 +76,12 @@ public class MainFragment extends Fragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        textToSpeechHelper.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         binding.swipeRefreshLayout.removeAllViews();
         super.onDestroyView();

@@ -29,6 +29,14 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
     }
 
     @Override
+    public void onPause() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         if (textToSpeech != null) {
             textToSpeech.shutdown();
