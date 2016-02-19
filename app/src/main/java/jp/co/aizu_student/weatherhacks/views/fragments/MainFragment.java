@@ -1,10 +1,11 @@
 package jp.co.aizu_student.weatherhacks.views.fragments;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,8 @@ import javax.inject.Inject;
 
 import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
-import jp.co.aizu_student.weatherhacks.views.activities.LocationListActivity;
-import jp.co.aizu_student.weatherhacks.views.activities.MainActivity;
+import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
+import jp.co.aizu_student.weatherhacks.interfaces.OnWeatherClickListener;
 import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
@@ -24,12 +25,17 @@ import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
-public class MainFragment extends Fragment implements WeatherInfoHandler, View.OnClickListener {
+public class MainFragment extends Fragment
+        implements WeatherInfoHandler, OnWeatherClickListener, SwipeRefreshLayout.OnRefreshListener {
     /** Bundle Key */
     private static final String KEY_TARGET_DAY = "target_day";
 
     @Inject
     WeatherHacksApiHelper weatherHacksApiHelper;
+    @Inject
+    TextToSpeechHelper textToSpeechHelper;
+
+    private Handler handler;
 
     private FragmentMainBinding binding;
 
@@ -57,7 +63,9 @@ public class MainFragment extends Fragment implements WeatherInfoHandler, View.O
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding = DataBindingUtil.bind(view);
-        binding.setListener(this);
+        binding.setRefreshListener(this);
+        binding.setWeatherListener(this);
+        textToSpeechHelper.init(getActivity().getApplicationContext());
     }
 
     @Override
@@ -68,8 +76,16 @@ public class MainFragment extends Fragment implements WeatherInfoHandler, View.O
     }
 
     @Override
+    public void onDestroyView() {
+        binding.swipeRefreshLayout.removeAllViews();
+        super.onDestroyView();
+    }
+
+    @Override
     public void onDestroy() {
+        textToSpeechHelper.onDestroy();
         weatherHacksApiHelper.onDestroy();
+        textToSpeechHelper = null;
         weatherHacksApiHelper = null;
         super.onDestroy();
     }
@@ -102,8 +118,36 @@ public class MainFragment extends Fragment implements WeatherInfoHandler, View.O
     }
 
     @Override
-    public void onClick(View v) {
-        Intent intent = new Intent(getActivity(), LocationListActivity.class);
-        getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE);
+    public void onPrefectureClick(View v) {
+        textToSpeechHelper.talkWeatherWithTemperature(
+                getArguments().getInt(KEY_TARGET_DAY) == 0
+                        ? getActivity().getString(R.string.today)
+                        : getActivity().getString(R.string.tomorrow),
+                binding.getLocation(),
+                binding.getForecast(),
+                binding.getTemp()
+        );
+    }
+
+    @Override
+    public void onTemperatureClick(View view) {
+        textToSpeechHelper.talkTemperature(binding.getTemp());
+    }
+
+    @Override
+    public void onWeatherClick(View view) {
+        textToSpeechHelper.talkWeather(binding.getForecast());
+    }
+
+    @Override
+    public void onRefresh() {
+        handler = new Handler();
+        handler.postDelayed(() -> {
+            weatherHacksApiHelper.requestWeather(
+                    WeatherHacks.getInstance().getLocationId(),
+                    getActivity().getSupportFragmentManager()
+            );
+            binding.swipeRefreshLayout.setRefreshing(false);
+        }, 1500);
     }
 }
