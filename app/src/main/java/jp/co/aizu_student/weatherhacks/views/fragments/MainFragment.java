@@ -63,7 +63,6 @@ public class MainFragment extends Fragment
         binding = DataBindingUtil.bind(view);
         binding.setRefreshListener(this);
         binding.setWeatherListener(this);
-        textToSpeechHelper.init(getActivity().getApplicationContext());
     }
 
     @Override
@@ -71,6 +70,13 @@ public class MainFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         String param = WeatherHacks.getInstance().getLocationId();
         weatherHacksApiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
+        textToSpeechHelper.init(getActivity().getApplicationContext());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        textToSpeechHelper.onResume();
     }
 
     @Override

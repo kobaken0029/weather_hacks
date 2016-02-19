@@ -14,6 +14,7 @@ import jp.co.aizu_student.weatherhacks.models.Temperature;
 
 public class TextToSpeechHelperImpl implements TextToSpeechHelper {
     private TextToSpeech textToSpeech;
+    private Context context;
 
     private TextToSpeech.OnInitListener onInitListener = status -> {
         if (status == TextToSpeech.SUCCESS && textToSpeech != null) {
@@ -25,7 +26,15 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
 
     @Override
     public void init(Context context) {
+        this.context = context;
         textToSpeech = new TextToSpeech(context, onInitListener);
+    }
+
+    @Override
+    public void onResume() {
+        if (textToSpeech == null) {
+            init(context);
+        }
     }
 
     @Override
