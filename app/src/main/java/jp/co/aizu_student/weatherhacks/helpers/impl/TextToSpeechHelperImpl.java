@@ -90,13 +90,21 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
             cold = Integer.valueOf(temperature.getMin().get(Temperature.CELSIUS)) < 9;
         }
 
-        String suffix = "です。";
+        String suffix = "";
+
+        if (temperature.getMin() != null || temperature.getMin() != null) {
+            suffix = "です。";
+        }
 
         if (hot) {
             suffix += "熱いですね！！こまめな水分補給を忘れずに！";
         } else if (cold) {
             suffix += "寒いですね。あ、あの。もう少し、近くに寄っても、いいですか？";
-        } else {
+        } else if (forecast.getTelop().contains("雨") || forecast.getTelop().contains("雪")) {
+            suffix += "傘を持って行ったほうが良さそうですね！";
+        } else if (temperature.getMax() != null
+                && temperature.getMin() != null
+                && forecast.getTelop().contains("晴")) {
             suffix += "過ごしやすい日ですね！折角ですし、どこか出かけに行きませんか？";
         }
 
