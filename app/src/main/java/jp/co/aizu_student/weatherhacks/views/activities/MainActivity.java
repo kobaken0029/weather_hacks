@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 
 import javax.inject.Inject;
 
@@ -19,7 +18,8 @@ import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+
     /** リクエストコード */
     public static final int REQUEST_CODE = 1;
 
@@ -32,18 +32,12 @@ public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 
-    private Toolbar.OnMenuItemClickListener mMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            if (item.getItemId() == R.id.refresh) {
-                String param = WeatherHacks.getInstance().getLocationId();
-
-                weatherHacksApiHelper.requestWeather(param, getSupportFragmentManager());
-
-                Snackbar.make(binding.viewPager, getString(R.string.refresh_message), Snackbar.LENGTH_SHORT).show();
-            }
-            return false;
+    private Toolbar.OnMenuItemClickListener mMenuItemClickListener = item -> {
+        if (item.getItemId() == R.id.nationwide) {
+            Intent intent = new Intent(this, LocationListActivity.class);
+            startActivityForResult(intent, MainActivity.REQUEST_CODE);
         }
+        return false;
     };
 
     @Override
@@ -97,9 +91,21 @@ public class MainActivity extends BaseActivity {
     private void initTabLayout() {
         MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), this);
         binding.viewPager.setAdapter(pagerAdapter);
-        binding.viewPager.addOnPageChangeListener(pagerAdapter);
+        binding.viewPager.addOnPageChangeListener(this);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
     }
 }

@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.views.fragments.MainFragment;
 
-public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
+public class MyPagerAdapter extends FragmentPagerAdapter {
     /** タグ */
     private static final String TAG = MyPagerAdapter.class.getName();
 
@@ -27,18 +27,6 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements ViewPager.On
     public MyPagerAdapter(FragmentManager fragmentManager, Context context) {
         super(fragmentManager);
         this.context = context;
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-    }
-
-    @Override
-    public void onPageSelected(int position) {
     }
 
     @Override
