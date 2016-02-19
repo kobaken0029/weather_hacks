@@ -81,8 +81,8 @@ public class MainFragment extends Fragment
 
     @Override
     public void onPause() {
-        super.onPause();
         textToSpeechHelper.onPause();
+        super.onPause();
     }
 
     @Override
