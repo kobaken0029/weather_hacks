@@ -41,7 +41,6 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
     public void onPause() {
         if (textToSpeech != null) {
             textToSpeech.stop();
-            textToSpeech.shutdown();
         }
     }
 
