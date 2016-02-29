@@ -8,6 +8,8 @@ import jp.co.aizu_student.weatherhacks.models.Temperature;
 
 public interface TextToSpeechHelper {
     void init(Context context);
+    void onResume();
+    void onPause();
     void onDestroy();
     void talk(String sentence);
     void talkWeather(Forecast forecast);
