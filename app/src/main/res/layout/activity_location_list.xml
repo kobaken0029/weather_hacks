@@ -2,11 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.widget.AdapterView.OnItemClickListener" />
 
+        <import type="jp.co.aizu_student.weatherhacks.interfaces.OnEmptyMessageClickListener" />
+
         <variable
-            name="listener"
+            name="itemClickListener"
             type="OnItemClickListener" />
+
+        <variable
+            name="emptyMessageClickListener"
+            type="OnEmptyMessageClickListener" />
     </data>
 
     <RelativeLayout
@@ -21,12 +28,27 @@
             android:minHeight="?attr/actionBarSize"
             app:elevation="4dp" />
 
-        <ListView
-            android:id="@+id/location_listview"
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
-            android:onItemClick="@{listener.onItemClick}" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
+
+            <ListView
+                android:id="@+id/location_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onItemClick="@{itemClickListener.onItemClick}" />
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:onClick="@{emptyMessageClickListener.onEmptyMessageClick}"
+                android:text="@string/empty_message"
+                android:visibility="gone" />
+        </FrameLayout>
 
     </RelativeLayout>
 </layout>

@@ -5,8 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -16,11 +14,12 @@ import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityLocationListBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
+import jp.co.aizu_student.weatherhacks.interfaces.OnEmptyMessageClickListener;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.LocationListAdapter;
 
 public class LocationListActivity extends BaseActivity
-        implements LocationListHandler, AdapterView.OnItemClickListener {
+        implements LocationListHandler, AdapterView.OnItemClickListener, OnEmptyMessageClickListener {
 
     @Inject
     WeatherHacksRssHelper weatherHacksRssHelper;
@@ -52,16 +51,13 @@ public class LocationListActivity extends BaseActivity
 
         LocationListAdapter locationListAdapter = new LocationListAdapter(this, 0, locations);
         binding.locationListview.setAdapter(locationListAdapter);
-        binding.setListener(this);
+        binding.setItemClickListener(this);
     }
 
     @Override
     public void showErrorMessage() {
-        LinearLayout linearLayout = new LinearLayout(this);
-        TextView textView = new TextView(this);
-        textView.setText("空っぽだよ");
-        linearLayout.addView(textView);
-        binding.locationListview.setEmptyView(linearLayout);
+        binding.emptyText.setVisibility(View.VISIBLE);
+        binding.setEmptyMessageClickListener(this);
     }
 
     @Override
@@ -76,5 +72,11 @@ public class LocationListActivity extends BaseActivity
 
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onEmptyMessageClick(View v) {
+        binding.emptyText.setVisibility(View.GONE);
+        weatherHacksRssHelper.rssParse(this);
     }
 }
