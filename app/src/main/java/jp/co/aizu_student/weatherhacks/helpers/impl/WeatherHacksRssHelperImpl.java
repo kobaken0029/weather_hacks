@@ -44,17 +44,20 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
         subscription = fetchRss()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(xml -> {
+                .subscribe(
+                        xml -> {
                             try {
                                 handler.setUpLocationListView(parse(xml));
                             } catch (IOException | XmlPullParserException e) {
                                 Log.e(TAG, e.getMessage());
                                 handler.showErrorMessage();
                             }
-                        }, throwable -> {
+                        },
+                        throwable -> {
                             Log.e(TAG, throwable.getMessage());
                             handler.showErrorMessage();
-                        });
+                        }
+                );
     }
 
     @Override

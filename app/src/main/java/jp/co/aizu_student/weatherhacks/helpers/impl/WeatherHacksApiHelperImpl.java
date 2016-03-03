@@ -44,7 +44,8 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
         subscription = retrofit.create(WeatherHacksApi.class).get(parameter)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(weatherInfo ->
+                .subscribe(
+                        weatherInfo ->
                                 Stream.of(fragmentManager.getFragments())
                                         .forEach(handler -> ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
                         throwable -> Log.e(TAG, throwable.toString()),
