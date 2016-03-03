@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
         WeatherHacks weatherHacks = WeatherHacks.getInstance();
-        weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, ""));
+        weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, WeatherHacks.DEFAULT_LOCATION_ID));
 
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
