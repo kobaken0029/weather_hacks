@@ -1,57 +1,60 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.annimon.stream.Stream;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.bind.DateTypeAdapter;
 
-import org.json.JSONObject;
+import java.util.Date;
 
-import jp.co.aizu_student.weatherhacks.MyApplication;
-import jp.co.aizu_student.weatherhacks.fragments.MainFragment;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
-import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
+import jp.co.aizu_student.weatherhacks.network.api.WeatherHacksApi;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-
-/**
- * Created by koba on 2015/09/10.
- */
 public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
     /** タグ */
-    private static final String TAG = WeatherHacksApiHelper.class.getName();
+    private static final String TAG = WeatherHacksApiHelper.class.getSimpleName();
+
+    private Subscription subscription;
 
     @Override
     public void requestWeather(String parameter, final FragmentManager fragmentManager) {
-        String url = ApiContents.BASE_URL + ApiContents.API_URL + parameter;
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(Date.class, new DateTypeAdapter())
+                .create();
 
-        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                WeatherInfo weatherInfo = new Gson().fromJson(response.toString(), WeatherInfo.class);
-                for (Fragment f : fragmentManager.getFragments()) {
-                    MainFragment targetFragment = (MainFragment) f;
-                    targetFragment.setViewFromWeatherInfo(weatherInfo);
-                }
-            }
-        };
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiContents.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
 
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // エラーが発生した場合
-                Log.e(TAG, error.toString());
-            }
-        };
+        subscription = retrofit.create(WeatherHacksApi.class).get(parameter)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        weatherInfo ->
+                                Stream.of(fragmentManager.getFragments())
+                                        .forEach(handler -> ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
+                        throwable -> Log.e(TAG, throwable.toString()),
+                        () -> Log.d(TAG, "onCompleted")
+                );
+    }
 
-        JsonObjectRequest request =
-                new JsonObjectRequest(ApiContents.HTTP_GET, url, (String) null, listener, errorListener);
-
-        MyApplication.newInstance().getRequestQueue().add(request);
+    @Override
+    public void onDestroy() {
+        subscription.unsubscribe();
     }
 }
