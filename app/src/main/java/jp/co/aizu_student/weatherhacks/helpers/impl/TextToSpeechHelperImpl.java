@@ -60,6 +60,9 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
             String UTTERANCE_ID = "SPEECH";
             HashMap<String, String> ttsParam = new HashMap<>();
             ttsParam.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID);
+
+            sentence = sentence.replace("曇のち雨", "曇のちあめ");
+
             textToSpeech.speak(sentence, TextToSpeech.QUEUE_FLUSH, ttsParam);
         }
     }
