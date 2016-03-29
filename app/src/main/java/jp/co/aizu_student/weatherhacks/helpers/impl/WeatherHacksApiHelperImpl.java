@@ -45,9 +45,8 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        weatherInfo ->
-                                Stream.of(fragmentManager.getFragments())
-                                        .forEach(handler -> ((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
+                        weatherInfo -> Stream.of(fragmentManager.getFragments())
+                                             .forEach(handler ->((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
                         throwable -> Log.e(TAG, throwable.toString()),
                         () -> Log.d(TAG, "onCompleted")
                 );
