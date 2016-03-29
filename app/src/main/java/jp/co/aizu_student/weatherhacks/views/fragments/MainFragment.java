@@ -2,10 +2,8 @@ package jp.co.aizu_student.weatherhacks.views.fragments;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,8 @@ import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainFragment extends Fragment
-        implements WeatherInfoHandler, OnWeatherClickListener, SwipeRefreshLayout.OnRefreshListener {
+        implements WeatherInfoHandler, OnWeatherClickListener {
+
     /** Bundle Key */
     private static final String KEY_TARGET_DAY = "target_day";
 
@@ -61,7 +60,6 @@ public class MainFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding = DataBindingUtil.bind(view);
-        binding.setRefreshListener(this);
         binding.setWeatherListener(this);
     }
 
@@ -83,12 +81,6 @@ public class MainFragment extends Fragment
     public void onPause() {
         textToSpeechHelper.onPause();
         super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        binding.swipeRefreshLayout.removeAllViews();
-        super.onDestroyView();
     }
 
     @Override
@@ -147,16 +139,5 @@ public class MainFragment extends Fragment
     @Override
     public void onWeatherClick(View view) {
         textToSpeechHelper.talkWeather(binding.getForecast());
-    }
-
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(() -> {
-            weatherHacksApiHelper.requestWeather(
-                    WeatherHacks.getInstance().getLocationId(),
-                    getActivity().getSupportFragmentManager()
-            );
-            binding.swipeRefreshLayout.setRefreshing(false);
-        }, 1500);
     }
 }
