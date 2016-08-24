@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityMainBinding;
+import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
@@ -23,15 +24,21 @@ import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 public class MainActivity extends BaseActivity
         implements ViewPager.OnPageChangeListener {
 
-    /** リクエストコード */
+    /**
+     * リクエストコード
+     */
     public static final int REQUEST_CODE = 1;
 
-    /** SharedPreferencesのKey */
+    /**
+     * SharedPreferencesのKey
+     */
     private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
 
     @Inject
     WeatherHacksApiHelper weatherHacksApiHelper;
+    @Inject
+    TextToSpeechHelper textToSpeechHelper;
 
     private ActivityMainBinding binding;
 
@@ -41,12 +48,25 @@ public class MainActivity extends BaseActivity
             startActivityForResult(intent, MainActivity.REQUEST_CODE);
         } else if (item.getItemId() == R.id.refresh) {
             Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> {
+            new Handler().postDelayed(() ->
                 weatherHacksApiHelper.requestWeather(
                         WeatherHacks.getInstance().getLocationId(),
                         getSupportFragmentManager()
-                );
-            }, 1500);
+                ), 1500);
+        } else if (item.getItemId() == R.id.voice_on_off) {
+            // 音声ON/OFF切り替え
+            textToSpeechHelper.toggleVoicePlay();
+
+            // 音声再生の有無
+            final boolean isPlayVoice = textToSpeechHelper.canPlayVoice();
+
+            // Menu Iconの切り替え
+            item.setIcon(isPlayVoice ? R.drawable.ic_mic_white_24dp : R.drawable.ic_mic_off_white_24dp);
+
+            // メッセージを表示
+            final String formatArg = isPlayVoice ? getString(R.string.on) : getString(R.string.off);
+            final String message = getString(R.string.play_voice_switch_message, formatArg);
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
         }
         return false;
     };
