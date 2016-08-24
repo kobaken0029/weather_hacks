@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -21,7 +21,7 @@ import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainActivity extends BaseActivity
-        implements ViewPager.OnPageChangeListener, SwipeRefreshLayout.OnRefreshListener {
+        implements ViewPager.OnPageChangeListener {
 
     /** リクエストコード */
     public static final int REQUEST_CODE = 1;
@@ -39,6 +39,14 @@ public class MainActivity extends BaseActivity
         if (item.getItemId() == R.id.nationwide) {
             Intent intent = new Intent(this, LocationListActivity.class);
             startActivityForResult(intent, MainActivity.REQUEST_CODE);
+        } else if (item.getItemId() == R.id.refresh) {
+            Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> {
+                weatherHacksApiHelper.requestWeather(
+                        WeatherHacks.getInstance().getLocationId(),
+                        getSupportFragmentManager()
+                );
+            }, 1500);
         }
         return false;
     };
@@ -98,7 +106,6 @@ public class MainActivity extends BaseActivity
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        binding.setRefreshListener(this);
     }
 
     @Override
@@ -111,16 +118,5 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPageSelected(int position) {
-    }
-
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(() -> {
-            weatherHacksApiHelper.requestWeather(
-                    WeatherHacks.getInstance().getLocationId(),
-                    getSupportFragmentManager()
-            );
-            binding.swipeRefreshLayout.setRefreshing(false);
-        }, 1500);
     }
 }
