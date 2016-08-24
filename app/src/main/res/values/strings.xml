@@ -19,4 +19,9 @@
 
     <string name="refresh">更新</string>
     <string name="refresh_now">更新中&#8230;</string>
+
+    <string name="voice_on_off">音声切り替え</string>
+    <string name="play_voice_switch_message">音声再生を%1$sにしました。</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
 </resources>
