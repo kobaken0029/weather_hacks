@@ -45,6 +45,8 @@ public class LocationListActivity extends BaseActivity
         initToolbar(binding.toolbar, R.string.location_list, true, false, null);
         weatherHacksRssHelper.rssParse(this);
 
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         locationSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.locationSpinner.setAdapter(locationSpinnerArrayAdapter);
@@ -100,12 +102,15 @@ public class LocationListActivity extends BaseActivity
         LocationListAdapter locationListAdapter = new LocationListAdapter(this, 0, this.locations);
         binding.locationListview.setAdapter(locationListAdapter);
         binding.setItemClickListener(this);
+
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
     }
 
     @Override
     public void showErrorMessage() {
         binding.emptyText.setVisibility(View.VISIBLE);
         binding.setEmptyMessageClickListener(this);
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
     }
 
     @Override
