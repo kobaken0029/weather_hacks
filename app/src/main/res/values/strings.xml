@@ -24,4 +24,7 @@
     <string name="play_voice_switch_message">音声再生を%1$sにしました。</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
+
+    <string name="spinner_title">絞込</string>
+    <string name="location_title">地域</string>
 </resources>
