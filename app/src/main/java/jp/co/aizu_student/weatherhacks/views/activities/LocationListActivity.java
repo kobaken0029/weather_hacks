@@ -45,6 +45,7 @@ public class LocationListActivity extends BaseActivity
         initToolbar(binding.toolbar, R.string.location_list, true, false, null);
         weatherHacksRssHelper.rssParse(this);
 
+        // ProgressBarを表示させる
         findViewById(R.id.progress_bar).setVisibility(View.GONE);
 
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
@@ -53,8 +54,8 @@ public class LocationListActivity extends BaseActivity
         binding.locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Spinner spinner = (Spinner) parent;
-                String prefectureName = (String) spinner.getSelectedItem();
+                final Spinner spinner = (Spinner) parent;
+                final String prefectureName = (String) spinner.getSelectedItem();
 
                 if (allLocations == null) {
                     return;
@@ -64,8 +65,9 @@ public class LocationListActivity extends BaseActivity
                 locations = Stream.of(allLocations)
                         .filter(l -> l.getPrefecture().equals(prefectureName) || prefectureName.equals("--------"))
                         .collect(Collectors.toList());
-                ((ArrayAdapter<Location>) binding.locationListview.getAdapter()).clear();
-                ((ArrayAdapter<Location>) binding.locationListview.getAdapter()).addAll(locations);
+                final LocationListAdapter listAdapter = (LocationListAdapter) binding.locationListview.getAdapter();
+                listAdapter.clear();
+                listAdapter.addAll(locations);
             }
 
             @Override
@@ -87,10 +89,15 @@ public class LocationListActivity extends BaseActivity
         if (locations == null) {
             return;
         }
+
+        // ListViewに反映させる用
         this.locations = locations;
+
+        // Spinnerに反映させる用(すべてのLocation)
         this.allLocations = new ArrayList<>(this.locations);
 
-        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>();
+        // 都道府県を順序を保ち、一意に取り出すためにLinkedHashSetを利用する
+        final LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>();
         linkedHashSet.add("--------");
         Stream.of(allLocations).forEach(l -> {
             if (!linkedHashSet.contains(l.getPrefecture())) {
@@ -99,10 +106,11 @@ public class LocationListActivity extends BaseActivity
         });
         locationSpinnerArrayAdapter.addAll(linkedHashSet);
 
-        LocationListAdapter locationListAdapter = new LocationListAdapter(this, 0, this.locations);
+        final LocationListAdapter locationListAdapter = new LocationListAdapter(this, 0, this.locations);
         binding.locationListview.setAdapter(locationListAdapter);
         binding.setItemClickListener(this);
 
+        // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
         findViewById(R.id.progress_bar).setVisibility(View.GONE);
     }
 
@@ -110,6 +118,8 @@ public class LocationListActivity extends BaseActivity
     public void showErrorMessage() {
         binding.emptyText.setVisibility(View.VISIBLE);
         binding.setEmptyMessageClickListener(this);
+
+        // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
         findViewById(R.id.progress_bar).setVisibility(View.GONE);
     }
 
