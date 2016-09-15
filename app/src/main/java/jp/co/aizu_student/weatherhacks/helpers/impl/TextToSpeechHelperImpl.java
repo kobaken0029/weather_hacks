@@ -83,11 +83,19 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
 
     @Override
     public void talkTemperature(Temperature temperature) {
-        talk("最高気温は、"
-                + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス")
-                + "度、最低気温は、"
-                + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス")
-                + "度です。"
+        talk(
+                (
+                        temperature.getMax() != null
+                        ? ("最高気温は、" + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、")
+                        : ""
+                )
+                +
+                (
+                        temperature.getMin() != null
+                        ? ("最低気温は、" + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、")
+                        : ""
+                )
+                + "です。"
         );
     }
 
