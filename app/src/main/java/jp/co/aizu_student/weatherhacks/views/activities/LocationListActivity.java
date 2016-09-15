@@ -46,7 +46,7 @@ public class LocationListActivity extends BaseActivity
         weatherHacksRssHelper.rssParse(this);
 
         // ProgressBarを表示させる
-        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
 
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         locationSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
