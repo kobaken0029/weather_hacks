@@ -83,36 +83,37 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
 
     @Override
     public void talkTemperature(Temperature temperature) {
-        talk("最高気温は、"
-                + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス")
-                + "度、最低気温は、"
-                + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス")
-                + "度です。"
-        );
+        final String maxTemp = temperature.getMax() != null
+                ? ("最高気温は、" + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、")
+                : "";
+        final String minTemp = temperature.getMin() != null
+                ? ("最低気温は、" + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、")
+                : "";
+
+        talk(maxTemp + minTemp + "です。");
     }
 
     @Override
     public void talkWeatherWithTemperature(
             String whatDay, Location location, Forecast forecast, Temperature temperature) {
-
         boolean hot = false;
         boolean cold = false;
 
         String maxTemp = "";
         if (temperature.getMax() != null) {
-            maxTemp = "最高気温は、" + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度";
+            maxTemp = "最高気温は、" + temperature.getMax().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、";
             hot = Integer.valueOf(temperature.getMax().get(Temperature.CELSIUS)) > 20;
         }
 
         String minTemp = "";
         if (temperature.getMin() != null) {
-            minTemp = "、最低気温は、" + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度";
+            minTemp = "最低気温は、" + temperature.getMin().get(Temperature.CELSIUS).replaceAll("-", "マイナス") + "度、";
             cold = Integer.valueOf(temperature.getMin().get(Temperature.CELSIUS)) < 9;
         }
 
         String suffix = "";
 
-        if (temperature.getMin() != null || temperature.getMin() != null) {
+        if (temperature.getMax() != null || temperature.getMin() != null) {
             suffix = "です。";
         }
 
