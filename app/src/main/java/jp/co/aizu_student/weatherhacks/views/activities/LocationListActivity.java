@@ -26,7 +26,8 @@ import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.LocationListAdapter;
 
 public class LocationListActivity extends BaseActivity
-        implements LocationListHandler, AdapterView.OnItemClickListener, OnEmptyMessageClickListener {
+        implements LocationListHandler, AdapterView.OnItemClickListener,
+                   OnEmptyMessageClickListener, Spinner.OnItemSelectedListener {
     private List<Location> locations;
     private List<Location> allLocations;
     private ArrayAdapter<String> locationSpinnerArrayAdapter;
@@ -51,30 +52,7 @@ public class LocationListActivity extends BaseActivity
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         locationSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.locationSpinner.setAdapter(locationSpinnerArrayAdapter);
-        binding.locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final Spinner spinner = (Spinner) parent;
-                final String prefectureName = (String) spinner.getSelectedItem();
-
-                if (allLocations == null) {
-                    return;
-                }
-
-                // 選択された都道府県に応じてフィルタリング
-                locations = Stream.of(allLocations)
-                        .filter(l -> l.getPrefecture().equals(prefectureName) || prefectureName.equals("--------"))
-                        .collect(Collectors.toList());
-                final LocationListAdapter listAdapter = (LocationListAdapter) binding.locationListview.getAdapter();
-                listAdapter.clear();
-                listAdapter.addAll(locations);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // nothing
-            }
-        });
+        binding.locationSpinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -141,5 +119,28 @@ public class LocationListActivity extends BaseActivity
     public void onEmptyMessageClick(View v) {
         binding.emptyText.setVisibility(View.GONE);
         weatherHacksRssHelper.rssParse(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        final Spinner spinner = (Spinner) adapterView;
+        final String prefectureName = (String) spinner.getSelectedItem();
+
+        if (allLocations == null) {
+            return;
+        }
+
+        // 選択された都道府県に応じてフィルタリング
+        locations = Stream.of(allLocations)
+                .filter(l -> l.getPrefecture().equals(prefectureName) || prefectureName.equals("--------"))
+                .collect(Collectors.toList());
+        final LocationListAdapter listAdapter = (LocationListAdapter) binding.locationListview.getAdapter();
+        listAdapter.clear();
+        listAdapter.addAll(locations);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        // nothing
     }
 }
