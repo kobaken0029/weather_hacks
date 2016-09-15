@@ -81,6 +81,8 @@ public class MainActivity extends BaseActivity
         WeatherHacks weatherHacks = WeatherHacks.getInstance();
         weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, WeatherHacks.DEFAULT_LOCATION_ID));
 
+        textToSpeechHelper.init(getApplicationContext());
+
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
     }
@@ -113,6 +115,23 @@ public class MainActivity extends BaseActivity
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void initToolbar(Toolbar toolbar, int titleId, boolean isShowBackArrow, boolean isShowMenu,
+                               Toolbar.OnMenuItemClickListener menuItemClickListener) {
+        toolbar.setTitle(titleId);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+
+        if (isShowMenu) {
+            toolbar.inflateMenu(textToSpeechHelper.canPlayVoice() ? R.menu.main_menu : R.menu.main_menu_voice_off);
+            toolbar.setOnMenuItemClickListener(menuItemClickListener);
+        }
+
+        if (isShowBackArrow) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+            toolbar.setNavigationOnClickListener(v -> finish());
         }
     }
 

@@ -68,7 +68,6 @@ public class MainFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         String param = WeatherHacks.getInstance().getLocationId();
         weatherHacksApiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
-        textToSpeechHelper.init(getActivity().getApplicationContext());
     }
 
     @Override

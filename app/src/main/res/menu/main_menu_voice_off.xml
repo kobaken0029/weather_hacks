@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nationwide"
+        android:icon="@drawable/japan_image"
+        android:title="@string/nationwide"
+        app:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/voice_on_off"
+        android:icon="@drawable/ic_mic_off_white_24dp"
+        android:title="@string/voice_on_off"
+        app:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom">
+    </item>
+</menu>
