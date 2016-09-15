@@ -15,9 +15,6 @@
 
         <import type="android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener" />
 
-        <variable
-            name="refreshListener"
-            type="OnRefreshListener" />
 
         <variable
             name="weatherListener"
@@ -36,87 +33,80 @@
             type="Temperature" />
     </data>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onSwipeRefresh="@{refreshListener.onRefresh}">
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:gravity="start"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:gravity="start"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+        <TextView
+            android:id="@+id/pref_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="@{weatherListener.onPrefectureClick}"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{(location.getPrefecture() ?? "") + " " + (location.getCity() ?? "")}'
+            android:textSize="24sp"
+            tools:text="東京都" />
 
-            <TextView
-                android:id="@+id/pref_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/max_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="@{weatherListener.onTemperatureClick}"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{temp.getMax() != null ? @string/celsius_symbol(temp.getMax().get(Temperature.CELSIUS)) : ""}'
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            tools:text="27℃" />
+
+        <TextView
+            android:id="@+id/min_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="@{weatherListener.onTemperatureClick}"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text='@{temp.getMin() != null ? @string/celsius_symbol(temp.getMin().get(Temperature.CELSIUS)) : ""}'
+            android:textColor="#0000FF"
+            android:textSize="24sp"
+            tools:text="27℃" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/weather_image"
+                android:layout_width="168dp"
+                android:layout_height="144dp"
                 android:layout_gravity="center"
-                android:onClick="@{weatherListener.onPrefectureClick}"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text='@{(location.getPrefecture() ?? "") + " " + (location.getCity() ?? "")}'
-                android:textSize="24sp"
-                tools:text="東京都" />
-
-            <TextView
-                android:id="@+id/max_temperature_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:onClick="@{weatherListener.onTemperatureClick}"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text='@{temp.getMax() != null ? @string/celsius_symbol(temp.getMax().get(Temperature.CELSIUS)) : ""}'
-                android:textColor="#FF0000"
-                android:textSize="24sp"
-                tools:text="27℃" />
-
-            <TextView
-                android:id="@+id/min_temperature_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:onClick="@{weatherListener.onTemperatureClick}"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text='@{temp.getMin() != null ? @string/celsius_symbol(temp.getMin().get(Temperature.CELSIUS)) : ""}'
-                android:textColor="#0000FF"
-                android:textSize="24sp"
-                tools:text="27℃" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/weather_image"
-                    android:layout_width="168dp"
-                    android:layout_height="144dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/weather_info"
-                    android:onClick="@{weatherListener.onWeatherClick}"
-                    tools:src="@drawable/no_image" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/weather_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:contentDescription="@string/weather_info"
                 android:onClick="@{weatherListener.onWeatherClick}"
-                android:text='@{forecast.getTelop() ?? ""}'
-                android:textSize="80sp"
-                tools:text="晴れ" />
+                tools:src="@drawable/no_image" />
+        </FrameLayout>
 
-        </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:id="@+id/weather_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{weatherListener.onWeatherClick}"
+            android:text='@{forecast.getTelop() ?? ""}'
+            android:textSize="80sp"
+            tools:text="晴れ" />
+
+    </LinearLayout>
 </layout>

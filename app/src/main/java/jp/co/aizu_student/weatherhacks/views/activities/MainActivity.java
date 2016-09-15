@@ -5,30 +5,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityMainBinding;
+import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity
+        implements ViewPager.OnPageChangeListener {
 
-    /** リクエストコード */
+    /**
+     * リクエストコード
+     */
     public static final int REQUEST_CODE = 1;
 
-    /** SharedPreferencesのKey */
+    /**
+     * SharedPreferencesのKey
+     */
     private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
 
     @Inject
     WeatherHacksApiHelper weatherHacksApiHelper;
+    @Inject
+    TextToSpeechHelper textToSpeechHelper;
 
     private ActivityMainBinding binding;
 
@@ -36,6 +46,27 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         if (item.getItemId() == R.id.nationwide) {
             Intent intent = new Intent(this, LocationListActivity.class);
             startActivityForResult(intent, MainActivity.REQUEST_CODE);
+        } else if (item.getItemId() == R.id.refresh) {
+            Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() ->
+                weatherHacksApiHelper.requestWeather(
+                        WeatherHacks.getInstance().getLocationId(),
+                        getSupportFragmentManager()
+                ), 1500);
+        } else if (item.getItemId() == R.id.voice_on_off) {
+            // 音声ON/OFF切り替え
+            textToSpeechHelper.toggleVoicePlay();
+
+            // 音声再生の有無
+            final boolean isPlayVoice = textToSpeechHelper.canPlayVoice();
+
+            // Menu Iconの切り替え
+            item.setIcon(isPlayVoice ? R.drawable.ic_mic_white_24dp : R.drawable.ic_mic_off_white_24dp);
+
+            // メッセージを表示
+            final String formatArg = isPlayVoice ? getString(R.string.on) : getString(R.string.off);
+            final String message = getString(R.string.play_voice_switch_message, formatArg);
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
         }
         return false;
     };
@@ -49,6 +80,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
         WeatherHacks weatherHacks = WeatherHacks.getInstance();
         weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, WeatherHacks.DEFAULT_LOCATION_ID));
+
+        textToSpeechHelper.init(getApplicationContext());
 
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
@@ -82,6 +115,23 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void initToolbar(Toolbar toolbar, int titleId, boolean isShowBackArrow, boolean isShowMenu,
+                               Toolbar.OnMenuItemClickListener menuItemClickListener) {
+        toolbar.setTitle(titleId);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+
+        if (isShowMenu) {
+            toolbar.inflateMenu(textToSpeechHelper.canPlayVoice() ? R.menu.main_menu : R.menu.main_menu_voice_off);
+            toolbar.setOnMenuItemClickListener(menuItemClickListener);
+        }
+
+        if (isShowBackArrow) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+            toolbar.setNavigationOnClickListener(v -> finish());
         }
     }
 

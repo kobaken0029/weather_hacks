@@ -25,7 +25,6 @@ public class WeatherHacks extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        weatherHacks = new WeatherHacks();
         initializeInjector();
     }
 

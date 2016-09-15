@@ -9,7 +9,7 @@
     </item>
     <item
         android:id="@+id/voice_on_off"
-        android:icon="@drawable/ic_mic_white_24dp"
+        android:icon="@drawable/ic_mic_off_white_24dp"
         android:title="@string/voice_on_off"
         app:showAsAction="ifRoom">
     </item>

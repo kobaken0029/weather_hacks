@@ -15,4 +15,6 @@ public interface TextToSpeechHelper {
     void talkWeather(Forecast forecast);
     void talkTemperature(Temperature temperature);
     void talkWeatherWithTemperature(String whatDay, Location location, Forecast forecast, Temperature temperature);
+    void toggleVoicePlay();
+    boolean canPlayVoice();
 }
