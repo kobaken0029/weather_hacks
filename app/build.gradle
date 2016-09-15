@@ -10,8 +10,8 @@ android {
         applicationId "jp.co.aizu_student.weatherhacks"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 3
-        versionName "v1.2.0"
+        versionCode 4
+        versionName "v1.3.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
