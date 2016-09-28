@@ -1,5 +1,6 @@
 package jp.co.aizu_student.weatherhacks.views.fragments;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -116,6 +118,14 @@ public class MainFragment extends Fragment
                 .placeholder(R.drawable.no_image)
                 .error(R.drawable.no_image)
                 .into(binding.weatherImage);
+    }
+
+    @Override
+    public void showMessageForRefreshed(boolean isRefreshed) {
+        if (isRefreshed) {
+            Context c = getContext();
+            Toast.makeText(c, c.getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -1,9 +1,9 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import com.annimon.stream.Stream;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +30,15 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
 
     @Override
     public void requestWeather(String parameter, final FragmentManager fragmentManager) {
+        request(parameter, fragmentManager, false);
+    }
+
+    @Override
+    public void refreshWeather(String parameter, FragmentManager fragmentManager) {
+        request(parameter, fragmentManager, true);
+    }
+
+    private void request(String parameter, final FragmentManager fragmentManager, boolean isRefresh) {
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTypeAdapter())
@@ -45,8 +54,16 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        weatherInfo -> Stream.of(fragmentManager.getFragments())
-                                             .forEach(handler ->((WeatherInfoHandler) handler).setViewFromWeatherInfo(weatherInfo)),
+                        weatherInfo -> {
+                            WeatherInfoHandler handler = null;
+                            for (Fragment f : fragmentManager.getFragments()) {
+                                handler = ((WeatherInfoHandler) f);
+                                handler.setViewFromWeatherInfo(weatherInfo);
+                            }
+                            if (handler != null) {
+                                handler.showMessageForRefreshed(isRefresh);
+                            }
+                        },
                         throwable -> Log.e(TAG, throwable.toString()),
                         () -> Log.d(TAG, "onCompleted")
                 );
