@@ -1,10 +1,8 @@
 package jp.co.aizu_student.weatherhacks.helpers.impl;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -13,7 +11,6 @@ import com.google.gson.internal.bind.DateTypeAdapter;
 
 import java.util.Date;
 
-import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
@@ -58,13 +55,13 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         weatherInfo -> {
-                            Context c = null;
+                            WeatherInfoHandler handler = null;
                             for (Fragment f : fragmentManager.getFragments()) {
-                                ((WeatherInfoHandler) f).setViewFromWeatherInfo(weatherInfo);
-                                c = f.getContext();
+                                handler = ((WeatherInfoHandler) f);
+                                handler.setViewFromWeatherInfo(weatherInfo);
                             }
-                            if (isRefresh && c != null) {
-                                Toast.makeText(c, c.getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
+                            if (handler != null) {
+                                handler.showMessageForRefreshed(isRefresh);
                             }
                         },
                         throwable -> Log.e(TAG, throwable.toString()),
