@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="refreshListener"
             type="android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener" />
@@ -33,18 +34,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tab_layout"
-            android:background="#FFFFFFFF">
+            android:background="@color/white">
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFFFF">
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <View
-                    android:id="@+id/shadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    android:background="@drawable/bg_shadow" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <View
+                android:id="@+id/shadow"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_shadow" />
         </FrameLayout>
 
     </RelativeLayout>

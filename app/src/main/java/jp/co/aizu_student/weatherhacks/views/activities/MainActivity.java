@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -24,14 +25,10 @@ import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 public class MainActivity extends BaseActivity
         implements ViewPager.OnPageChangeListener {
 
-    /**
-     * リクエストコード
-     */
+    /** リクエストコード */
     public static final int REQUEST_CODE = 1;
 
-    /**
-     * SharedPreferencesのKey
-     */
+    /** SharedPreferencesのKey */
     private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
     private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
 
@@ -41,6 +38,8 @@ public class MainActivity extends BaseActivity
     TextToSpeechHelper textToSpeechHelper;
 
     private ActivityMainBinding binding;
+    private Runnable runnable;
+    private Handler handler;
 
     private Toolbar.OnMenuItemClickListener mMenuItemClickListener = item -> {
         if (item.getItemId() == R.id.nationwide) {
@@ -49,10 +48,10 @@ public class MainActivity extends BaseActivity
         } else if (item.getItemId() == R.id.refresh) {
             Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() ->
-                weatherHacksApiHelper.requestWeather(
-                        WeatherHacks.getInstance().getLocationId(),
-                        getSupportFragmentManager()
-                ), 1500);
+                    weatherHacksApiHelper.requestWeather(
+                            WeatherHacks.getInstance().getLocationId(),
+                            getSupportFragmentManager()
+                    ), 1500);
         } else if (item.getItemId() == R.id.voice_on_off) {
             // 音声ON/OFF切り替え
             textToSpeechHelper.toggleVoicePlay();
@@ -145,14 +144,38 @@ public class MainActivity extends BaseActivity
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        binding.swipeRefresh.setColorSchemeResources(R.color.red600, R.color.green600,
+                R.color.blue600, R.color.orange600);
+
+        // 更新処理用ハンドラ
+        handler = new Handler();
+
+        // 更新処理は非同期で行う
+        runnable = () -> {
+            weatherHacksApiHelper.refreshWeather(
+                    WeatherHacks.getInstance().getLocationId(),
+                    getSupportFragmentManager()
+            );
+            binding.swipeRefresh.setRefreshing(false);
+        };
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
+            handler.postDelayed(runnable, 2000);
+        });
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // 画面がスクロールされたら更新処理をキャンセルする
+        handler.removeCallbacks(runnable);
+        binding.swipeRefresh.setRefreshing(false);
+        binding.swipeRefresh.setEnabled(false);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
+        // SwipeRefreshによるViewPagerジャック対策
+        binding.swipeRefresh.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 
     @Override
