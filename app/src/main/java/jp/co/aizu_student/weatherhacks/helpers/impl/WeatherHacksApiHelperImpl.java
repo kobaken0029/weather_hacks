@@ -13,6 +13,7 @@ import com.google.gson.internal.bind.DateTypeAdapter;
 
 import java.util.Date;
 
+import jp.co.aizu_student.weatherhacks.R;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
@@ -63,7 +64,7 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                                 c = f.getContext();
                             }
                             if (isRefresh && c != null) {
-                                Toast.makeText(c, "更新できました！", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(c, c.getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
                             }
                         },
                         throwable -> Log.e(TAG, throwable.toString()),
