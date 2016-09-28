@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -45,13 +44,6 @@ public class MainActivity extends BaseActivity
         if (item.getItemId() == R.id.nationwide) {
             Intent intent = new Intent(this, LocationListActivity.class);
             startActivityForResult(intent, MainActivity.REQUEST_CODE);
-        } else if (item.getItemId() == R.id.refresh) {
-            Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() ->
-                    weatherHacksApiHelper.requestWeather(
-                            WeatherHacks.getInstance().getLocationId(),
-                            getSupportFragmentManager()
-                    ), 1500);
         } else if (item.getItemId() == R.id.voice_on_off) {
             // 音声ON/OFF切り替え
             textToSpeechHelper.toggleVoicePlay();
