@@ -25,10 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
-            android:background="#00C0D8"
-            app:tabIndicatorColor="#FFC107"
-            app:tabSelectedTextColor="#FFFFFFFF"
-            app:tabTextColor="#AAFFFFFF" />
+            android:background="@color/colorPrimary" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -40,7 +37,7 @@
                 android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFFFFFF">
+                android:background="@color/white">
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/view_pager"
