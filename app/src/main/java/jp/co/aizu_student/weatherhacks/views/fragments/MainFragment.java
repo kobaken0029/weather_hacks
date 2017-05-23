@@ -88,8 +88,6 @@ public class MainFragment extends Fragment
     public void onDestroy() {
         textToSpeechHelper.onDestroy();
         weatherHacksApiHelper.onDestroy();
-        textToSpeechHelper = null;
-        weatherHacksApiHelper = null;
         super.onDestroy();
     }
 

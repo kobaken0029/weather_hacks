@@ -47,7 +47,7 @@ public class LocationListActivity extends BaseActivity
         weatherHacksRssHelper.rssParse(this);
 
         // ProgressBarを表示させる
-        findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
 
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         locationSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -58,7 +58,6 @@ public class LocationListActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         weatherHacksRssHelper.onDestroy();
-        weatherHacksRssHelper = null;
         super.onDestroy();
     }
 
@@ -89,7 +88,7 @@ public class LocationListActivity extends BaseActivity
         binding.setItemClickListener(this);
 
         // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
-        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class LocationListActivity extends BaseActivity
         binding.setEmptyMessageClickListener(this);
 
         // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
-        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override

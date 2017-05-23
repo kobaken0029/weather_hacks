@@ -2,6 +2,7 @@ package jp.co.aizu_student.weatherhacks.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,12 @@ public class LocationListAdapter extends ArrayAdapter<Location> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ActivityLocationListRowBinding binding;
 
         if (convertView == null) {
-            binding = DataBindingUtil.inflate(mLayoutInflater, R.layout.activity_location_list_row, parent, false);
+            binding = DataBindingUtil
+                    .inflate(mLayoutInflater, R.layout.activity_location_list_row, parent, false);
             convertView = binding.getRoot();
             convertView.setTag(binding);
         } else {

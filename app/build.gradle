@@ -40,6 +40,7 @@ android {
 }
 
 def SUPPORT_PACKAGE_VERSION = "25.3.1"
+def OKHTTP3_PACKAGE_VERSION = "3.8.0"
 def RETROFIT2_PACKAGE_VERSION = "2.3.0"
 def RX_LIFECYCLE_PACKAGE_VERSION = "2.0.1"
 def DAGGER2_PACKAGE_VERSION = "2.9"
@@ -50,7 +51,8 @@ dependencies {
     compile "com.android.support:design:$SUPPORT_PACKAGE_VERSION"
 
     // Network
-    compile "com.squareup.okhttp3:okhttp:3.8.0"
+    compile "com.squareup.okhttp3:okhttp:$OKHTTP3_PACKAGE_VERSION"
+    compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP3_PACKAGE_VERSION"
     compile "com.squareup.retrofit2:retrofit:$RETROFIT2_PACKAGE_VERSION"
     compile "com.squareup.retrofit2:converter-gson:$RETROFIT2_PACKAGE_VERSION"
     compile "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT2_PACKAGE_VERSION"

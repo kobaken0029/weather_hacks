@@ -21,8 +21,7 @@ import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
-public class MainActivity extends BaseActivity
-        implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     /**
      * リクエストコード
@@ -46,23 +45,26 @@ public class MainActivity extends BaseActivity
     private Handler handler;
 
     private Toolbar.OnMenuItemClickListener mMenuItemClickListener = item -> {
-        if (item.getItemId() == R.id.nationwide) {
-            Intent intent = new Intent(this, LocationListActivity.class);
-            startActivityForResult(intent, MainActivity.REQUEST_CODE);
-        } else if (item.getItemId() == R.id.voice_on_off) {
-            // 音声ON/OFF切り替え
-            textToSpeechHelper.toggleVoicePlay();
+        switch (item.getItemId()) {
+            case R.id.nationwide:
+                Intent intent = new Intent(this, LocationListActivity.class);
+                startActivityForResult(intent, MainActivity.REQUEST_CODE);
+                return true;
+            case R.id.voice_on_off:
+                // 音声ON/OFF切り替え
+                textToSpeechHelper.toggleVoicePlay();
 
-            // 音声再生の有無
-            final boolean isPlayVoice = textToSpeechHelper.canPlayVoice();
+                // 音声再生の有無
+                final boolean isPlayVoice = textToSpeechHelper.canPlayVoice();
 
-            // Menu Iconの切り替え
-            item.setIcon(isPlayVoice ? R.drawable.ic_mic_white_24dp : R.drawable.ic_mic_off_white_24dp);
+                // Menu Iconの切り替え
+                item.setIcon(isPlayVoice ? R.drawable.ic_mic_white_24dp : R.drawable.ic_mic_off_white_24dp);
 
-            // メッセージを表示
-            final String formatArg = isPlayVoice ? getString(R.string.on) : getString(R.string.off);
-            final String message = getString(R.string.play_voice_switch_message, formatArg);
-            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                // メッセージを表示
+                final String formatArg = isPlayVoice ? getString(R.string.on) : getString(R.string.off);
+                final String message = getString(R.string.play_voice_switch_message, formatArg);
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                return true;
         }
         return false;
     };
@@ -77,16 +79,28 @@ public class MainActivity extends BaseActivity
                 WeatherHacks.DEFAULT_LOCATION_ID);
         ((WeatherHacks) getApplication()).setLocationId(defaultLocationId);
 
-        textToSpeechHelper.init(getApplicationContext());
+        textToSpeechHelper.init();
 
         initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
         initTabLayout();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        textToSpeechHelper.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        textToSpeechHelper.onPause();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
+        textToSpeechHelper.onDestroy();
         weatherHacksApiHelper.onDestroy();
-        weatherHacksApiHelper = null;
         super.onDestroy();
     }
 
@@ -175,5 +189,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPageSelected(int position) {
+        // nothing
     }
 }

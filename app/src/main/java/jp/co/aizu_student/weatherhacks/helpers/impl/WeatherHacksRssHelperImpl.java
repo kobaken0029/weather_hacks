@@ -39,19 +39,19 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     private static final String RSS_VALUE_NAME_ID = "id";
 
     private final CompositeDisposable compositeDisposable;
-
-    private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    private final OkHttpClient okHttpClient;
 
     @Inject
-    public WeatherHacksRssHelperImpl(CompositeDisposable compositeDisposable) {
+    public WeatherHacksRssHelperImpl(CompositeDisposable compositeDisposable, OkHttpClient client) {
         this.compositeDisposable = compositeDisposable;
+        this.okHttpClient = client;
     }
 
     @Override
     public void rssParse(final LocationListHandler handler) {
         Disposable disposable = fetchRss()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         xml -> {
                             try {
@@ -84,7 +84,7 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
                 Response response = okHttpClient.newCall(request).execute();
 
                 subscriber.onSuccess(response.body().string());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 subscriber.onError(e);
             }
         });
