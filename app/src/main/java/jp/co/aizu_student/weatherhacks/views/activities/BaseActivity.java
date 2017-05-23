@@ -1,5 +1,6 @@
 package jp.co.aizu_student.weatherhacks.views.activities;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -23,7 +24,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void initToolbar(Toolbar toolbar, int titleId, boolean isShowBackArrow, boolean isShowMenu,
                                Toolbar.OnMenuItemClickListener menuItemClickListener) {
         toolbar.setTitle(titleId);
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        toolbar.setTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
 
         if (isShowMenu) {
             toolbar.inflateMenu(R.menu.main_menu);
