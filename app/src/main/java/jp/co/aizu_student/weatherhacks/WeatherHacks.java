@@ -9,18 +9,9 @@ import jp.co.aizu_student.weatherhacks.di.modules.WeatherHacksModule;
 public class WeatherHacks extends Application {
     public static final String DEFAULT_LOCATION_ID = "070030";
 
-    private static WeatherHacks weatherHacks;
-
     private String mLocationId;
 
     private WeatherHacksComponent weatherHacksComponent;
-
-    public static WeatherHacks getInstance() {
-        if (weatherHacks == null) {
-            weatherHacks = new WeatherHacks();
-        }
-        return weatherHacks;
-    }
 
     @Override
     public void onCreate() {

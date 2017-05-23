@@ -68,7 +68,7 @@ public class MainFragment extends Fragment
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String param = WeatherHacks.getInstance().getLocationId();
+        String param = ((WeatherHacks) getActivity().getApplication()).getLocationId();
         weatherHacksApiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
     }
 
