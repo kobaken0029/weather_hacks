@@ -3,17 +3,13 @@
 
     <data>
 
-        <import type="android.widget.AdapterView.OnItemClickListener" />
-
-        <import type="jp.co.aizu_student.weatherhacks.interfaces.OnEmptyMessageClickListener" />
-
         <variable
             name="itemClickListener"
-            type="OnItemClickListener" />
+            type="android.widget.AdapterView.OnItemClickListener" />
 
         <variable
             name="emptyMessageClickListener"
-            type="OnEmptyMessageClickListener" />
+            type="jp.co.aizu_student.weatherhacks.interfaces.OnEmptyMessageClickListener" />
     </data>
 
     <RelativeLayout
