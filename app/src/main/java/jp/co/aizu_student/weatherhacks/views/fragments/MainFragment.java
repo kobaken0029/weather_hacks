@@ -1,6 +1,5 @@
 package jp.co.aizu_student.weatherhacks.views.fragments;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,31 +7,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.WeatherHacks;
+import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
+import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.OnWeatherClickListener;
-import jp.co.aizu_student.weatherhacks.databinding.FragmentMainBinding;
-import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
-import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
+import jp.co.aizu_student.weatherhacks.interfaces.UIWeatherHacksCallback;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.WeatherInfo;
-import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainFragment extends Fragment
-        implements WeatherInfoHandler, OnWeatherClickListener {
+        implements  OnWeatherClickListener, UIWeatherHacksCallback {
 
     /** Bundle Key */
     private static final String KEY_TARGET_DAY = "target_day";
 
-    @Inject
-    WeatherHacksApiHelper weatherHacksApiHelper;
     @Inject
     TextToSpeechHelper textToSpeechHelper;
 
@@ -66,13 +61,6 @@ public class MainFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        String param = ((WeatherHacks) getActivity().getApplication()).getLocationId();
-        weatherHacksApiHelper.requestWeather(param, getActivity().getSupportFragmentManager());
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         textToSpeechHelper.onResume();
@@ -87,9 +75,6 @@ public class MainFragment extends Fragment
     @Override
     public void onDestroy() {
         textToSpeechHelper.onDestroy();
-        weatherHacksApiHelper.onDestroy();
-        textToSpeechHelper = null;
-        weatherHacksApiHelper = null;
         super.onDestroy();
     }
 
@@ -98,34 +83,6 @@ public class MainFragment extends Fragment
      */
     private void injectModule() {
         ((WeatherHacks) getActivity().getApplication()).getWeatherHacksComponent().inject(this);
-    }
-
-    /**
-     * 天気情報から画面に値をセットする。
-     *
-     * @param info 天気情報
-     */
-    @Override
-    public void setViewFromWeatherInfo(WeatherInfo info) {
-        Forecast forecast = info.getForecasts().get(getArguments().getInt(MyPagerAdapter.KEY_TARGET_DAY));
-
-        binding.setForecast(forecast);
-        binding.setLocation(info.getLocation());
-        binding.setTemp(forecast.getTemperature());
-
-        Picasso.with(getActivity())
-                .load(forecast.getImage().getUrl())
-                .placeholder(R.drawable.no_image)
-                .error(R.drawable.no_image)
-                .into(binding.weatherImage);
-    }
-
-    @Override
-    public void showMessageForRefreshed(boolean isRefreshed) {
-        if (isRefreshed) {
-            Context c = getContext();
-            Toast.makeText(c, c.getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -148,5 +105,33 @@ public class MainFragment extends Fragment
     @Override
     public void onWeatherClick(View view) {
         textToSpeechHelper.talkWeather(binding.getForecast());
+    }
+
+    /**
+     * 天気情報から画面に値をセットする。
+     *
+     * @param info 天気情報
+     */
+    @Override
+    public void showWeather(WeatherInfo info) {
+        Forecast forecast = info.getForecasts().get(getArguments().getInt(MyPagerAdapter.KEY_TARGET_DAY));
+
+        binding.setForecast(forecast);
+        binding.setLocation(info.getLocation());
+        binding.setTemp(forecast.getTemperature());
+
+        Picasso.with(getActivity())
+                .load(forecast.getImage().getUrl())
+                .placeholder(R.drawable.no_image)
+                .error(R.drawable.no_image)
+                .into(binding.weatherImage);
+    }
+
+    @Override
+    public void clearWeather() {
+        binding.setForecast(null);
+        binding.setLocation(null);
+        binding.setTemp(null);
+        binding.weatherImage.setImageResource(R.drawable.no_image);
     }
 }

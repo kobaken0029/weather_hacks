@@ -8,6 +8,8 @@ import android.speech.tts.TextToSpeech;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.models.Forecast;
 import jp.co.aizu_student.weatherhacks.models.Location;
@@ -17,8 +19,9 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
     private static final String SHARED_PREFERENCES_VOICE_SWITCH_ID = "voice_switch";
     private static final String SHARED_PREFERENCES_VOICE_SWITCH_KEY = "voice_switch_key";
 
+    private final Context context;
+
     private TextToSpeech textToSpeech;
-    private Context context;
     private SharedPreferences sharedPreferences;
 
     private TextToSpeech.OnInitListener onInitListener = status -> {
@@ -29,17 +32,22 @@ public class TextToSpeechHelperImpl implements TextToSpeechHelper {
         }
     };
 
-    @Override
-    public void init(Context context) {
+    @Inject
+    public TextToSpeechHelperImpl(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public void init() {
         textToSpeech = new TextToSpeech(context, onInitListener);
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_VOICE_SWITCH_ID, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_VOICE_SWITCH_ID,
+                Context.MODE_PRIVATE);
     }
 
     @Override
     public void onResume() {
         if (textToSpeech == null) {
-            init(context);
+            init();
         }
     }
 

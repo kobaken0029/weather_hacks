@@ -4,6 +4,7 @@ import android.app.Application;
 
 import jp.co.aizu_student.weatherhacks.di.components.DaggerWeatherHacksComponent;
 import jp.co.aizu_student.weatherhacks.di.components.WeatherHacksComponent;
+import jp.co.aizu_student.weatherhacks.di.modules.AndroidModule;
 import jp.co.aizu_student.weatherhacks.di.modules.WeatherHacksModule;
 
 public class WeatherHacks extends Application {
@@ -22,6 +23,8 @@ public class WeatherHacks extends Application {
     private void initializeInjector() {
         this.weatherHacksComponent = DaggerWeatherHacksComponent.builder()
                 .weatherHacksModule(new WeatherHacksModule(this))
+                .androidModule(new AndroidModule(this))
+//                .httpClientModule(new HttpClientModule())
                 .build();
     }
 

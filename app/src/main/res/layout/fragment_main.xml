@@ -1,36 +1,24 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
-        <import type="jp.co.aizu_student.weatherhacks.interfaces.OnWeatherClickListener" />
-
-        <import type="jp.co.aizu_student.weatherhacks.models.Forecast" />
-
-        <import type="jp.co.aizu_student.weatherhacks.models.Location" />
-
-        <import type="jp.co.aizu_student.weatherhacks.models.Temperature" />
-
-        <import type="jp.co.aizu_student.weatherhacks.R" />
-
-        <import type="android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener" />
-
-
         <variable
             name="weatherListener"
-            type="OnWeatherClickListener" />
+            type="jp.co.aizu_student.weatherhacks.interfaces.OnWeatherClickListener" />
 
         <variable
             name="forecast"
-            type="Forecast" />
+            type="jp.co.aizu_student.weatherhacks.models.Forecast" />
 
         <variable
             name="location"
-            type="Location" />
+            type="jp.co.aizu_student.weatherhacks.models.Location" />
 
         <variable
             name="temp"
-            type="Temperature" />
+            type="jp.co.aizu_student.weatherhacks.models.Temperature" />
     </data>
 
     <LinearLayout
@@ -52,8 +40,8 @@
             android:onClick="@{weatherListener.onPrefectureClick}"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text='@{(location.getPrefecture() ?? "") + " " + (location.getCity() ?? "")}'
             android:textSize="24sp"
+            app:location="@{location}"
             tools:text="東京都" />
 
         <TextView
@@ -64,9 +52,9 @@
             android:onClick="@{weatherListener.onTemperatureClick}"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text='@{temp.getMax() != null ? @string/celsius_symbol(temp.getMax().get(Temperature.CELSIUS)) : ""}'
             android:textColor="#FF0000"
             android:textSize="24sp"
+            app:temperature="@{temp.getMax()}"
             tools:text="27℃" />
 
         <TextView
@@ -77,9 +65,9 @@
             android:onClick="@{weatherListener.onTemperatureClick}"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text='@{temp.getMin() != null ? @string/celsius_symbol(temp.getMin().get(Temperature.CELSIUS)) : ""}'
             android:textColor="#0000FF"
             android:textSize="24sp"
+            app:temperature="@{temp.getMin()}"
             tools:text="27℃" />
 
         <FrameLayout

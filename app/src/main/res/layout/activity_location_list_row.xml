@@ -3,17 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="jp.co.aizu_student.weatherhacks.models.Location" />
+
         <variable
             name="location"
-            type="Location" />
+            type="jp.co.aizu_student.weatherhacks.models.Location" />
     </data>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/location"

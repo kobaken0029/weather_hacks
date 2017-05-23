@@ -1,8 +1,11 @@
 package jp.co.aizu_student.weatherhacks.helpers;
 
-import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
+import java.util.List;
+
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherHacksCallback;
+import jp.co.aizu_student.weatherhacks.models.Location;
 
 public interface WeatherHacksRssHelper {
-    void rssParse(LocationListHandler handler);
+    void rssParse(WeatherHacksCallback<List<Location>> callback);
     void onDestroy();
 }
