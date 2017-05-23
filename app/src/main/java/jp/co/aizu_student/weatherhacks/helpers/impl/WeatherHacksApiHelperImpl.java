@@ -11,22 +11,30 @@ import com.google.gson.internal.bind.DateTypeAdapter;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.WeatherInfoHandler;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import jp.co.aizu_student.weatherhacks.network.api.WeatherHacksApi;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
     /** タグ */
     private static final String TAG = WeatherHacksApiHelper.class.getSimpleName();
 
-    private Subscription subscription;
+    private final CompositeDisposable compositeDisposable;
+
+    @Inject
+    public WeatherHacksApiHelperImpl(CompositeDisposable compositeDisposable) {
+        this.compositeDisposable = compositeDisposable;
+    }
 
     @Override
     public void requestWeather(String parameter, final FragmentManager fragmentManager) {
@@ -47,12 +55,12 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiContents.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        subscription = retrofit.create(WeatherHacksApi.class).get(parameter)
-                .observeOn(AndroidSchedulers.mainThread())
+        Disposable disposable = retrofit.create(WeatherHacksApi.class).get(parameter)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         weatherInfo -> {
                             WeatherInfoHandler handler = null;
@@ -64,13 +72,13 @@ public class WeatherHacksApiHelperImpl implements WeatherHacksApiHelper {
                                 handler.showMessageForRefreshed(isRefresh);
                             }
                         },
-                        throwable -> Log.e(TAG, throwable.toString()),
-                        () -> Log.d(TAG, "onCompleted")
+                        throwable -> Log.e(TAG, throwable.toString())
                 );
+        compositeDisposable.add(disposable);
     }
 
     @Override
     public void onDestroy() {
-        subscription.unsubscribe();
+        compositeDisposable.dispose();
     }
 }

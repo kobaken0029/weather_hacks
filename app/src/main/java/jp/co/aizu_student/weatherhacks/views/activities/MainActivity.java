@@ -24,17 +24,22 @@ import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 public class MainActivity extends BaseActivity
         implements ViewPager.OnPageChangeListener {
 
-    /** リクエストコード */
+    /**
+     * リクエストコード
+     */
     public static final int REQUEST_CODE = 1;
 
-    /** SharedPreferencesのKey */
-    private static final String SHARED_PREFERENCES_KEY = "weather_hacks_app";
-    private static final String SHARED_PREFERENCES_KEY_LOCATION_ID = "location_id";
+    /**
+     * SharedPreferencesのKey
+     */
+    private static final String SHARED_PREF_LOCATION_ID = "location_id";
 
     @Inject
     WeatherHacksApiHelper weatherHacksApiHelper;
     @Inject
     TextToSpeechHelper textToSpeechHelper;
+    @Inject
+    SharedPreferences sharedPreferences;
 
     private ActivityMainBinding binding;
     private Runnable runnable;
@@ -68,9 +73,9 @@ public class MainActivity extends BaseActivity
         getApplicationComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        SharedPreferences data = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
-        WeatherHacks weatherHacks = WeatherHacks.getInstance();
-        weatherHacks.setLocationId(data.getString(SHARED_PREFERENCES_KEY_LOCATION_ID, WeatherHacks.DEFAULT_LOCATION_ID));
+        final String defaultLocationId = sharedPreferences.getString(SHARED_PREF_LOCATION_ID,
+                WeatherHacks.DEFAULT_LOCATION_ID);
+        ((WeatherHacks) getApplication()).setLocationId(defaultLocationId);
 
         textToSpeechHelper.init(getApplicationContext());
 
@@ -95,12 +100,10 @@ public class MainActivity extends BaseActivity
                     String param = bundle.getString(Location.FIELD_NAME_ID);
                     weatherHacksApiHelper.requestWeather(param, getSupportFragmentManager());
 
-                    WeatherHacks weatherHacks = WeatherHacks.getInstance();
-                    weatherHacks.setLocationId(param);
+                    ((WeatherHacks) getApplication()).setLocationId(param);
 
-                    SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString(SHARED_PREFERENCES_KEY_LOCATION_ID, param);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(SHARED_PREF_LOCATION_ID, param);
                     editor.apply();
                 }
                 break;
@@ -145,7 +148,7 @@ public class MainActivity extends BaseActivity
         // 更新処理は非同期で行う
         runnable = () -> {
             weatherHacksApiHelper.refreshWeather(
-                    WeatherHacks.getInstance().getLocationId(),
+                    ((WeatherHacks) getApplication()).getLocationId(),
                     getSupportFragmentManager()
             );
             binding.swipeRefresh.setRefreshing(false);
