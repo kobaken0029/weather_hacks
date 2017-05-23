@@ -4,23 +4,15 @@ import android.app.Application;
 
 import jp.co.aizu_student.weatherhacks.di.components.DaggerWeatherHacksComponent;
 import jp.co.aizu_student.weatherhacks.di.components.WeatherHacksComponent;
+import jp.co.aizu_student.weatherhacks.di.modules.AndroidModule;
 import jp.co.aizu_student.weatherhacks.di.modules.WeatherHacksModule;
 
 public class WeatherHacks extends Application {
     public static final String DEFAULT_LOCATION_ID = "070030";
 
-    private static WeatherHacks weatherHacks;
-
     private String mLocationId;
 
     private WeatherHacksComponent weatherHacksComponent;
-
-    public static WeatherHacks getInstance() {
-        if (weatherHacks == null) {
-            weatherHacks = new WeatherHacks();
-        }
-        return weatherHacks;
-    }
 
     @Override
     public void onCreate() {
@@ -31,6 +23,8 @@ public class WeatherHacks extends Application {
     private void initializeInjector() {
         this.weatherHacksComponent = DaggerWeatherHacksComponent.builder()
                 .weatherHacksModule(new WeatherHacksModule(this))
+                .androidModule(new AndroidModule(this))
+//                .httpClientModule(new HttpClientModule())
                 .build();
     }
 

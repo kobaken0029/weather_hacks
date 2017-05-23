@@ -1,17 +1,16 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "jp.co.aizu_student.weatherhacks"
         minSdkVersion 14
-        targetSdkVersion 24
-        versionCode 4
-        versionName "v1.3.0"
+        targetSdkVersion 25
+        versionCode 5
+        versionName "v1.3.1"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -35,28 +34,43 @@ android {
     dataBinding {
         enabled true
     }
+    dexOptions {
+        javaMaxHeapSize "1g"
+    }
 }
+
+def SUPPORT_PACKAGE_VERSION = "25.3.1"
+def OKHTTP3_PACKAGE_VERSION = "3.8.0"
+def RETROFIT2_PACKAGE_VERSION = "2.3.0"
+def RX_LIFECYCLE_PACKAGE_VERSION = "2.0.1"
+def DAGGER2_PACKAGE_VERSION = "2.9"
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    compile "com.android.support:appcompat-v7:$SUPPORT_PACKAGE_VERSION"
+    compile "com.android.support:design:$SUPPORT_PACKAGE_VERSION"
 
-    compile 'com.annimon:stream:1.0.6'
+    // Network
+    compile "com.squareup.okhttp3:okhttp:$OKHTTP3_PACKAGE_VERSION"
+    compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP3_PACKAGE_VERSION"
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT2_PACKAGE_VERSION"
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT2_PACKAGE_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT2_PACKAGE_VERSION"
 
-    compile 'com.squareup.okhttp3:okhttp:3.1.2'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
-    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    // Reactive Extensions
+    compile "io.reactivex.rxjava2:rxjava:2.1.0"
+    compile "io.reactivex.rxjava2:rxandroid:2.0.1"
+    compile "com.trello.rxlifecycle2:rxlifecycle:$RX_LIFECYCLE_PACKAGE_VERSION"
+    compile "com.trello.rxlifecycle2:rxlifecycle-android:$RX_LIFECYCLE_PACKAGE_VERSION"
+    compile "com.trello.rxlifecycle2:rxlifecycle-components:$RX_LIFECYCLE_PACKAGE_VERSION"
 
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'com.trello:rxlifecycle:0.4.0'
-    compile 'com.trello:rxlifecycle-components:0.4.0'
+    // For Stream API
+    compile "com.annimon:stream:1.1.7"
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    // UI
+    compile "com.squareup.picasso:picasso:2.5.2"
 
     // DI
-    apt 'com.google.dagger:dagger-compiler:2.0.2'
-    compile 'com.google.dagger:dagger:2.0.2'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile "com.google.dagger:dagger:$DAGGER2_PACKAGE_VERSION"
+    annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER2_PACKAGE_VERSION"
 }

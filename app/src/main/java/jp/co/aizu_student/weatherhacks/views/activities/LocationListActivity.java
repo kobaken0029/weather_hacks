@@ -18,16 +18,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.adapter.LocationListAdapter;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityLocationListBinding;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
-import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 import jp.co.aizu_student.weatherhacks.interfaces.OnEmptyMessageClickListener;
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherHacksCallback;
 import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.adapter.LocationListAdapter;
 
 public class LocationListActivity extends BaseActivity
-        implements LocationListHandler, AdapterView.OnItemClickListener,
-                   OnEmptyMessageClickListener, Spinner.OnItemSelectedListener {
+        implements AdapterView.OnItemClickListener, OnEmptyMessageClickListener,
+        Spinner.OnItemSelectedListener {
+
     private List<Location> locations;
     private List<Location> allLocations;
     private ArrayAdapter<String> locationSpinnerArrayAdapter;
@@ -37,6 +38,18 @@ public class LocationListActivity extends BaseActivity
 
     private ActivityLocationListBinding binding;
 
+    private WeatherHacksCallback<List<Location>> callback = new WeatherHacksCallback<List<Location>>() {
+        @Override
+        public void onSuccess(List<Location> data) {
+            setUpLocationListView(data);
+        }
+
+        @Override
+        public void onError(Throwable error) {
+            showErrorMessage();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +57,10 @@ public class LocationListActivity extends BaseActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_location_list);
 
         initToolbar(binding.toolbar, R.string.location_list, true, false, null);
-        weatherHacksRssHelper.rssParse(this);
+        weatherHacksRssHelper.rssParse(callback);
 
         // ProgressBarを表示させる
-        findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
 
         locationSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         locationSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -58,12 +71,10 @@ public class LocationListActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         weatherHacksRssHelper.onDestroy();
-        weatherHacksRssHelper = null;
         super.onDestroy();
     }
 
-    @Override
-    public void setUpLocationListView(List<Location> locations) {
+    private void setUpLocationListView(List<Location> locations) {
         if (locations == null) {
             return;
         }
@@ -89,16 +100,15 @@ public class LocationListActivity extends BaseActivity
         binding.setItemClickListener(this);
 
         // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
-        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
-    @Override
-    public void showErrorMessage() {
+    private void showErrorMessage() {
         binding.emptyText.setVisibility(View.VISIBLE);
         binding.setEmptyMessageClickListener(this);
 
         // 読み込み終了後にProgressBarを非表示にする(実際読み込みが早すぎてProgressBarが見えない)
-        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -118,7 +128,7 @@ public class LocationListActivity extends BaseActivity
     @Override
     public void onEmptyMessageClick(View v) {
         binding.emptyText.setVisibility(View.GONE);
-        weatherHacksRssHelper.rssParse(this);
+        weatherHacksRssHelper.rssParse(callback);
     }
 
     @Override
