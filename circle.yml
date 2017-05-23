@@ -8,7 +8,7 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter "android-24,build-tools-24.0.1,extra-android-m2repository,extra-android-support"
+    - echo y | android update sdk --no-ui --all --filter "android-25,build-tools-25.0.2,extra-android-m2repository,extra-android-support"
   cache_directories:
       - ~/.android
   override:
