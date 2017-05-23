@@ -3,10 +3,6 @@ package jp.co.aizu_student.weatherhacks.helpers.impl;
 import android.util.Log;
 import android.util.Xml;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -15,14 +11,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
 import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
-import rx.Single;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     /** タグ */
@@ -36,12 +38,18 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     private static final String RSS_VALUE_NAME_TITLE = "title";
     private static final String RSS_VALUE_NAME_ID = "id";
 
-    private OkHttpClient okHttpClient = new OkHttpClient();
-    private Subscription subscription;
+    private final CompositeDisposable compositeDisposable;
+
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+
+    @Inject
+    public WeatherHacksRssHelperImpl(CompositeDisposable compositeDisposable) {
+        this.compositeDisposable = compositeDisposable;
+    }
 
     @Override
     public void rssParse(final LocationListHandler handler) {
-        subscription = fetchRss()
+        Disposable disposable = fetchRss()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -58,11 +66,12 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
                             handler.showErrorMessage();
                         }
                 );
+        compositeDisposable.add(disposable);
     }
 
     @Override
     public void onDestroy() {
-        subscription.unsubscribe();
+        compositeDisposable.dispose();
     }
 
     private Single<String> fetchRss() {
