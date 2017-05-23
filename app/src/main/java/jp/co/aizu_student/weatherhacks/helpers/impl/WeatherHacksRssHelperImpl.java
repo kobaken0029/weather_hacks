@@ -19,7 +19,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksRssHelper;
-import jp.co.aizu_student.weatherhacks.interfaces.LocationListHandler;
+import jp.co.aizu_student.weatherhacks.interfaces.WeatherHacksCallback;
 import jp.co.aizu_student.weatherhacks.models.Location;
 import jp.co.aizu_student.weatherhacks.network.ApiContents;
 import okhttp3.OkHttpClient;
@@ -48,22 +48,22 @@ public class WeatherHacksRssHelperImpl implements WeatherHacksRssHelper {
     }
 
     @Override
-    public void rssParse(final LocationListHandler handler) {
+    public void rssParse(WeatherHacksCallback<List<Location>> callback) {
         Disposable disposable = fetchRss()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         xml -> {
                             try {
-                                handler.setUpLocationListView(parse(xml));
+                                callback.onSuccess(parse(xml));
                             } catch (IOException | XmlPullParserException e) {
                                 Log.e(TAG, e.getMessage());
-                                handler.showErrorMessage();
+                                callback.onError(e);
                             }
                         },
                         throwable -> {
                             Log.e(TAG, throwable.getMessage());
-                            handler.showErrorMessage();
+                            callback.onError(throwable);
                         }
                 );
         compositeDisposable.add(disposable);

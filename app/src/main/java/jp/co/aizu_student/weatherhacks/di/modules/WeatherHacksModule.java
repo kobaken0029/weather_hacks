@@ -66,8 +66,9 @@ public class WeatherHacksModule {
 
     @Provides
     @Singleton
-    WeatherHacksApi provideWeatherHacksApi() {
+    WeatherHacksApi provideWeatherHacksApi(OkHttpClient client) {
         return new Retrofit.Builder()
+                .client(client)
                 .baseUrl(ApiContents.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(generateGson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

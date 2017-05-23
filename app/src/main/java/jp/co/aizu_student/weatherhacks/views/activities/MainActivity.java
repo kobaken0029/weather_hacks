@@ -13,13 +13,13 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
-import jp.co.aizu_student.weatherhacks.WeatherHacks;
 import jp.co.aizu_student.weatherhacks.R;
+import jp.co.aizu_student.weatherhacks.WeatherHacks;
+import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 import jp.co.aizu_student.weatherhacks.databinding.ActivityMainBinding;
 import jp.co.aizu_student.weatherhacks.helpers.TextToSpeechHelper;
 import jp.co.aizu_student.weatherhacks.helpers.WeatherHacksApiHelper;
 import jp.co.aizu_student.weatherhacks.models.Location;
-import jp.co.aizu_student.weatherhacks.adapter.MyPagerAdapter;
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
@@ -41,6 +41,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     SharedPreferences sharedPreferences;
 
     private ActivityMainBinding binding;
+    private MyPagerAdapter pagerAdapter;
     private Runnable runnable;
     private Handler handler;
 
@@ -75,33 +76,16 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         getApplicationComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        final String defaultLocationId = sharedPreferences.getString(SHARED_PREF_LOCATION_ID,
-                WeatherHacks.DEFAULT_LOCATION_ID);
-        ((WeatherHacks) getApplication()).setLocationId(defaultLocationId);
-
         textToSpeechHelper.init();
-
-        initToolbar(binding.toolbar, R.string.weather_info, false, true, mMenuItemClickListener);
+        initToolbar(binding.toolbar, R.string.weather_info, mMenuItemClickListener);
         initTabLayout();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        textToSpeechHelper.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        textToSpeechHelper.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        textToSpeechHelper.onDestroy();
-        weatherHacksApiHelper.onDestroy();
-        super.onDestroy();
+        if (savedInstanceState == null) {
+            final String defaultLocationId = sharedPreferences.getString(SHARED_PREF_LOCATION_ID,
+                    WeatherHacks.DEFAULT_LOCATION_ID);
+            ((WeatherHacks) getApplication()).setLocationId(defaultLocationId);
+            showWeather(defaultLocationId);
+        }
     }
 
     @Override
@@ -110,14 +94,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         switch (requestCode) {
             case REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Bundle bundle = data.getExtras();
-                    String param = bundle.getString(Location.FIELD_NAME_ID);
-                    weatherHacksApiHelper.requestWeather(param, getSupportFragmentManager());
+                    final String locatinoId = data.getExtras().getString(Location.FIELD_NAME_ID);
 
-                    ((WeatherHacks) getApplication()).setLocationId(param);
+                    showWeather(locatinoId);
+
+                    ((WeatherHacks) getApplication()).setLocationId(locatinoId);
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(SHARED_PREF_LOCATION_ID, param);
+                    editor.putString(SHARED_PREF_LOCATION_ID, locatinoId);
                     editor.apply();
                 }
                 break;
@@ -126,28 +110,22 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
     }
 
-    @Override
-    protected void initToolbar(Toolbar toolbar, int titleId, boolean isShowBackArrow, boolean isShowMenu,
-                               Toolbar.OnMenuItemClickListener menuItemClickListener) {
-        toolbar.setTitle(titleId);
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-
-        if (isShowMenu) {
-            toolbar.inflateMenu(textToSpeechHelper.canPlayVoice() ? R.menu.main_menu : R.menu.main_menu_voice_off);
-            toolbar.setOnMenuItemClickListener(menuItemClickListener);
-        }
-
-        if (isShowBackArrow) {
-            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
+    /**
+     * toolbarの初期化。
+     */
+    private void initToolbar(Toolbar toolbar,
+                             int titleId,
+                             Toolbar.OnMenuItemClickListener menuItemClickListener) {
+        super.initToolbar(toolbar, titleId, false, false, menuItemClickListener);
+        toolbar.inflateMenu(textToSpeechHelper.canPlayVoice() ? R.menu.main_menu : R.menu.main_menu_voice_off);
+        toolbar.setOnMenuItemClickListener(menuItemClickListener);
     }
 
     /**
      * tabの初期化。
      */
     private void initTabLayout() {
-        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), this);
+        pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), this);
         binding.viewPager.setAdapter(pagerAdapter);
         binding.viewPager.addOnPageChangeListener(this);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
@@ -161,15 +139,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         // 更新処理は非同期で行う
         runnable = () -> {
-            weatherHacksApiHelper.refreshWeather(
-                    ((WeatherHacks) getApplication()).getLocationId(),
-                    getSupportFragmentManager()
-            );
+            final String locationId = ((WeatherHacks) getApplication()).getLocationId();
+            showWeather(locationId);
             binding.swipeRefresh.setRefreshing(false);
         };
         binding.swipeRefresh.setOnRefreshListener(() -> {
             Toast.makeText(MainActivity.this, getString(R.string.refresh_now), Toast.LENGTH_SHORT).show();
-            handler.postDelayed(runnable, 2000);
+            pagerAdapter.clearWeather();
+            handler.postDelayed(runnable, 1000);
         });
     }
 
@@ -190,5 +167,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     @Override
     public void onPageSelected(int position) {
         // nothing
+    }
+
+    private void showWeather(String locationId) {
+        weatherHacksApiHelper.requestWeather(locationId, pagerAdapter);
     }
 }
